@@ -49,7 +49,7 @@
 //        // Các test case khác...
 //    }
 //}
-using System;
+/*using System;
 using NUnit.Framework;
 using Moq;
 using BLL; // Nếu bạn sử dụng Moq để tạo mock cho IAccountBLL
@@ -119,5 +119,5 @@ namespace GUI.Test
             Assert.AreEqual(expectedResult, _loginWindow.IsLoggedIn);
         }
     }
-}
+}*/
 

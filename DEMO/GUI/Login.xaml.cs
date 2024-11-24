@@ -24,7 +24,7 @@ namespace GUI
         public TextBox Email { get; set; }
         public PasswordBox Password { get; set; }
         //private readonly IAccountBLL _accountBLL;
-        private IAccountBLL accountBLL;
+        private IAccountBLL accountBLL=new ACCOUNT_BLL();
 
         //public Login(IAccountBLL accountBLL) // Constructor nhận IAccountBLL
         //{
