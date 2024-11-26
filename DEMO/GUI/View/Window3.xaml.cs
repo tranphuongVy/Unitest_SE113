@@ -29,9 +29,13 @@ namespace GUI.View
     {
         ObservableCollection<ACCOUNT> members = new ObservableCollection<ACCOUNT>();
         private List<string> suggestions = new List<string> { "Gợi ý 1", "Gợi ý 2", "Gợi ý 3" };
+
+        public DataGrid memberDataGrid;
+        public bool IsSuccess { get; set; }
         public Window3()
         {
             InitializeComponent();
+            memberDataGrid = new DataGrid();
             var converter = new BrushConverter();
             LoadMembers();
         }
@@ -62,9 +66,10 @@ namespace GUI.View
             f.Show();
         }
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
+        public void Delete_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
+            IsSuccess = true;
             if (button != null)
             {
                 var data = button.DataContext as ACCOUNT;
@@ -72,6 +77,7 @@ namespace GUI.View
                 {   
                     if (data.PermissonID == 1)
                     {
+                        IsSuccess = false;
                         MessageBox.Show("You do not have permission to delete this member");
                         return;
                     }
@@ -80,6 +86,7 @@ namespace GUI.View
                     {   BLL.ACCOUNT_BLL prc = new BLL.ACCOUNT_BLL();
                         prc.deleteAccount(data.UserID);
                         collection.Remove(data);
+                        IsSuccess = true;
                     }
                 }
             }

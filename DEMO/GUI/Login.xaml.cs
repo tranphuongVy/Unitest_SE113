@@ -223,20 +223,20 @@ namespace GUI
             {
                 IsLoggedIn = true; // Nếu xác thực thành công
 
-                // Kiểm tra quyền truy cập dựa trên permissionID
-                switch (permissionID)
-                {
-                    case 1:
-                        openAdminForm(email, new[] { permissionID.ToString() }.ToList());
-                        break;
-                    case 2:
-                        openUserForm(email, new[] { permissionID.ToString() }.ToList());
-                        break;
-                    default:
-                        MessageBox.Show("Invalid permission", "Error");
-                        IsLoggedIn = false; // Thiết lập IsLoggedIn là false
-                        break;
-                }
+               // Kiểm tra quyền truy cập dựa trên permissionID
+                //switch (permissionID)
+                //{
+                //    case 1:
+                //        openAdminForm(email, new[] { permissionID.ToString() }.ToList());
+                //        break;
+                //    case 2:
+                //        openUserForm(email, new[] { permissionID.ToString() }.ToList());
+                //        break;
+                //    default:
+                //        MessageBox.Show("Invalid permission", "Error");
+                //        IsLoggedIn = false; // Thiết lập IsLoggedIn là false
+                //        break;
+                //}
             }
             else
             {

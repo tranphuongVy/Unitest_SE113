@@ -22,9 +22,31 @@ namespace GUI
 
     public partial class SignUp1 : Window
     {
+        public TextBox fName {  get; set; }
+        public TextBox lName { get; set; }
+        public TextBox Email { get; set; }
+        public TextBox Phone { get; set; }
+        public RadioButton Admin { get; set; }
+        public ComboBox Day { get; set; }
+        public ComboBox Month { get; set; }
+        public ComboBox Year { get; set; }
+        public PasswordBox Password { get; set; }
+        public PasswordBox RePassword { get; set; }
+
+        public bool IsSuccess { get; private set; }
+        private IAddMemberBLL addMemberBLL= new InsertProcessor();
+
         public SignUp1()
         {
             InitializeComponent();
+            fName= new TextBox();
+            lName= new TextBox();
+            Email= new TextBox();
+            Phone= new TextBox();
+            Admin= new RadioButton();
+
+            Password = new PasswordBox();
+            RePassword= new PasswordBox();
             //Day
             List<int> days = new List<int>();
             for (int i = 1; i <= 31; i++)
@@ -176,28 +198,37 @@ namespace GUI
         static bool PositiveIntegerChecking(string str)
         {
             // Biểu thức chính quy để kiểm tra ký tự đặc biệt
-            Regex regex = new Regex("[^0-9]");
-            return regex.IsMatch(str);
+            //Regex regex = new Regex("[^0-9]");
+            return !string.IsNullOrEmpty(str) && Regex.IsMatch(str, "^[1-9][0-9]+$");
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public void Button_Click(object sender, RoutedEventArgs e)
         {
-            User.UserName = txtFName.Text.Trim() + " " + txtLName.Text.Trim();
-            User.Email = txtMailAdd.Text.Trim() + "@gmail.com";
-            User.Birth = new DateTime((int)Y_comboBox.SelectedValue, (int)M_comboBox.SelectedValue, (int)D_comboBox.SelectedValue);
-            User.PasswordUser = txtRePassword.Password.Trim();
-            User.Phone = txtPhone.Text.Trim();
+            User.UserName = fName.Text.Trim() + " " + lName.Text.Trim();
+            User.Email = Email.Text.Trim() + "@gmail.com";
+            User.Birth = new DateTime((int)Year.SelectedValue, (int)Month.SelectedValue, (int)Day.SelectedValue);
+            User.PasswordUser = RePassword.Password.Trim();
+            User.Phone = Phone.Text.Trim();
+            IsSuccess = true;
+            if (string.IsNullOrEmpty(fName.Text) || string.IsNullOrEmpty(lName.Text)) 
+            {
+                IsSuccess = false;
+                MessageBox.Show("Name is null");
+                return;
+            }
             if (HasSpecialCharacters(User.UserName))
             {
+                IsSuccess = false;
                 MessageBox.Show("User Name has special character");
                 return;
             }
             if (PositiveIntegerChecking(User.Phone)) 
             {
-                MessageBox.Show("User Phone has special character");
+                IsSuccess = false;
+                MessageBox.Show("User Phone has special character, null or not 0 first");
                 return;
             }
-            if (Admin_bt.AllowDrop)
+            if (Admin.IsChecked==true)
             {
                 User.PermissonID = 1;
             }
@@ -207,17 +238,19 @@ namespace GUI
             }
             string kq = "";
             //accBLL.SignUp(User, ref kq);
-            new BLL.InsertProcessor().SignUp(User, ref kq);
+            addMemberBLL.Add_Member(User);
 
             if (kq == "")
             {
-                MessageBox.Show("Sign Up Success");
+                IsSuccess = true;
+                MessageBox.Show("Member Add Success");
                 /*Login f = new Login();
                 f.Show();*/
                 Window.GetWindow(this).Close();
             }
             else
             {
+                IsSuccess = false;
                 MessageBox.Show(kq);
             }
         }

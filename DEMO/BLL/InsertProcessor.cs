@@ -9,12 +9,25 @@ using System.ComponentModel;
 
 namespace BLL
 {
-    public class InsertProcessor
+    public interface IAddMemberBLL
     {
-
+        bool Add_Member(ACCOUNT user);
+    }
+    public class InsertProcessor: IAddMemberBLL
+    {
+     
         public InsertProcessor() { }
         // luu booking ticket vao db
-        public string Add_BookingTicket(CustomerDTO customer, FlightDTO flight, TicketClassDTO ticketClass, DateTime date, int status)
+        public bool Add_Member(ACCOUNT user)
+        {
+            string kq = "";
+            kq = new DAL.AccountAccess().SignUp(user);
+            if(kq=="")
+                return true;
+            else
+                return false;
+        }
+    public string Add_BookingTicket(CustomerDTO customer, FlightDTO flight, TicketClassDTO ticketClass, DateTime date, int status)
         {
             // luu khach hang
             string processState_InsertCustomer = new DAL.CustomerAsccess().Add_Customer(customer);

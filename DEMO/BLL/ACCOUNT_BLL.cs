@@ -26,31 +26,10 @@ namespace BLL
             accountDAL = new AccountAccess();
         }
 
-        //public bool AuthenticateAccount(string email, string password, out int permissionID)
-        //{
-        //    AccountAccess accountDAL = new AccountAccess();
-
-        //    if (accountDAL.CheckAccountExists(email))
-        //    {
-        //        permissionID = accountDAL.GetPermissionID(email, password);
-        //        return permissionID != 0;
-        //    }
-        //    else
-        //    {
-        //        permissionID = 0;
-        //        return false;
-        //    }
-        //}
 
         public bool AuthenticateAccount(string email, string password, out int permissionID)
         {
             AccountAccess accountDAL = new AccountAccess();
-            // Kiểm tra xem accountDAL có được khởi tạo không
-            //if (accountDAL == null)
-            //{
-            //    throw new InvalidOperationException("AccountAccess is not initialized.");
-            //}
-
             if (accountDAL.CheckAccountExists(email))
             {
                 permissionID = accountDAL.GetPermissionID(email, password);
