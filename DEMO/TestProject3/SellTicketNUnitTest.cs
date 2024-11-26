@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Moq;
 using System;
+using System.Text.RegularExpressions;
 using DTO;
 using BLL;
 using GUI;
@@ -14,20 +15,18 @@ namespace Tests
     public class SellTicketTests
     {
         private Mock<BookingTicket_BLL> _mockSellTicketBLL;
-       // private Window6 _sellTicketWindow;
         private SellingTicketDTO _ticketDTO;
 
         [SetUp]
         public void SetUp()
         {
+            // Mock BLL để giả lập hành vi
             _mockSellTicketBLL = new Mock<BookingTicket_BLL>();
-           // _sellTicketWindow = new Window6();
             _ticketDTO = new SellingTicketDTO();
         }
 
-
-    #region Test Cases for Flight ID
-    [Test]
+        #region Test Cases for Flight ID
+        [Test]
         public void TestFlightID_ShouldBeNotNullOrEmpty()
         {
             // Arrange
@@ -43,8 +42,6 @@ namespace Tests
         [TestCase("John Doe", true)]
         [TestCase(" ", false)]  // Invalid case: empty name
         [TestCase("", false)]  // Invalid case: null name
-        #endregion
-
         public void TestCustomerName_ShouldBeValid(string name, bool isValid)
         {
             // Arrange
@@ -61,47 +58,47 @@ namespace Tests
                 Assert.IsTrue(string.IsNullOrEmpty(_ticketDTO.CustomerName));
             }
         }
+        #endregion
 
         #region Test Cases for Phone Number
-        [TestCase(1234567890, true)] // Valid phone
-        [TestCase(0, false)]          // Invalid phone (0 is not a valid phone number)
-        [TestCase(12345, false)]      // Invalid phone (less than 10 digits)
-        #endregion
-        public void TestPhoneNumber_ShouldBeValid(int phone, bool isValid)
+        [TestCase(1234567890, true)]          // Valid phone number (digits only)
+        [TestCase(12345, false)]              // Invalid phone (less than 10 digits)
+        [TestCase(98765432, false)]          // Invalid phone (less than 10 digits)
+        [TestCase(0, false)]                 // Invalid phone (0 is not a valid phone number)
+        [TestCase(84912345678, true)]        // Valid phone number (without '+')
+        [TestCase("abcdefghij", false)]     // Invalid phone (letters instead of numbers)
+        [TestCase("12345abcde", false)]     // Invalid phone (mix of numbers and letters)
+        [TestCase("+84912345678abc", false)] // Invalid phone (mix of numbers and letters)
+        public void TestPhoneNumber_ShouldBeValid(object phone, bool isValid)
         {
             // Arrange
-            _ticketDTO.Phone = phone;
+            string phoneString = phone.ToString();  // Convert input to string
 
             // Act & Assert
-            if (isValid)
-            {
-                Assert.That(_ticketDTO.Phone, Is.EqualTo(phone));
-            }
-            else
-            {
-                Assert.That(_ticketDTO.Phone, Is.Not.EqualTo(1234567890)); // Invalid cases
-                Assert.That(phone < 1000000000 || phone > 9999999999, Is.True); // Optional: add validation for phone length
-            }
+            var phoneRegex = new Regex(@"^\+?\d{10,15}$");  // Regex for valid phone numbers (only digits, optional '+' at the start, length 10-15)
+
+            var isPhoneValid = phoneRegex.IsMatch(phoneString);
+
+            Assert.AreEqual(isValid, isPhoneValid, $"Phone validation failed for {phoneString}");
         }
+        #endregion
+
 
         #region Test Cases for Email
         [TestCase("john.doe@gmail.com", true)]  // Valid email
-        [TestCase("john.doe@com", false)]      // Invalid email
-        [TestCase("", false)]                   // Empty email
+        [TestCase("john.doe@com", false)]      // Invalid email (missing top-level domain)
+        [TestCase("invalid-email", false)]     // Invalid email format
+        [TestCase("", false)]                  // Empty email
         public void TestEmail_ShouldBeValid(string email, bool isValid)
         {
             // Arrange
             _ticketDTO.Email = email;
 
             // Act & Assert
-            if (isValid)
-            {
-                Assert.That(_ticketDTO.Email, Is.EqualTo(email));
-            }
-            else
-            {
-                Assert.IsTrue(string.IsNullOrEmpty(_ticketDTO.Email));
-            }
+            var emailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");  // Email regex
+            var isEmailValid = emailRegex.IsMatch(_ticketDTO.Email);
+
+            Assert.AreEqual(isValid, isEmailValid, $"Email validation failed for {email}");
         }
         #endregion
 
@@ -113,8 +110,7 @@ namespace Tests
             _ticketDTO.SellingDate = DateTime.Now;
 
             // Act & Assert
-            // Chỉ so sánh ngày, bỏ qua phần thời gian
-            Assert.That(_ticketDTO.SellingDate.Date, Is.EqualTo(DateTime.Now.Date));
+            Assert.That(_ticketDTO.SellingDate.Date, Is.EqualTo(DateTime.Now.Date), "Selling date should be today.");
         }
         #endregion
 
@@ -126,7 +122,7 @@ namespace Tests
             _ticketDTO.IsDeleted = 0; // Assuming 0 means not deleted
 
             // Act & Assert
-            Assert.That(_ticketDTO.IsDeleted, Is.EqualTo(0));
+            Assert.That(_ticketDTO.IsDeleted, Is.EqualTo(0), "Ticket should not be deleted initially.");
         }
         #endregion
 
@@ -138,7 +134,7 @@ namespace Tests
             _ticketDTO.TicketClassID = "Economy";
 
             // Act & Assert
-            Assert.IsNotNull(_ticketDTO.TicketClassID);
+            Assert.IsNotNull(_ticketDTO.TicketClassID, "Ticket class ID should not be null.");
             Assert.That(_ticketDTO.TicketClassID, Is.EqualTo("Economy"));
         }
         #endregion
