@@ -24,7 +24,7 @@ namespace GUI
         public TextBox Email { get; set; }
         public PasswordBox Password { get; set; }
         //private readonly IAccountBLL _accountBLL;
-        private IAccountBLL accountBLL;
+        private IAccountBLL accountBLL=new ACCOUNT_BLL();
 
         //public Login(IAccountBLL accountBLL) // Constructor nhận IAccountBLL
         //{
@@ -116,95 +116,15 @@ namespace GUI
             Window.GetWindow(this).Close();
         }
 
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-
-
-        //    string email = txtEmail.Text;
-        //    string password = txtPassword.Password;
-
-        //    ACCOUNT_BLL accountBLL = new ACCOUNT_BLL();
-        //    int permissionID;
-
-        //    if (accountBLL.AuthenticateAccount(email, password, out permissionID))
-        //    {
-        //        // Tài khoản và mật khẩu đúng
-        //        switch (permissionID)
-        //        {
-        //            case 1:
-        //                // Xử lý khi permissionID = 1 (Ví dụ: mở giao diện admin)
-        //                openAdminForm(email, new[] {permissionID.ToString()}.ToList());
-        //                break;
-        //            case 2:
-        //                // Xử lý khi permissionID = 2 (Ví dụ: mở giao diện người dùng thông thường)
-        //                openUserForm(email, new[] { permissionID.ToString() }.ToList());
-        //                break;
-        //            default:
-        //                MessageBox.Show("Invalid permission", "Error");
-        //                break;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Tài khoản hoặc mật khẩu không đúng
-        //        MessageBox.Show("Invalid account", "Error");
-        //    }
-
-
-        //}
-        //public void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    string email = txtEmail.Text;
-        //    string password = txtPassword.Password;
-
-        //    int permissionID;
-        //    if (Email == null || Password == null)
-        //    {
-        //        IsLoggedIn = false; // Nếu điều khiển là null, thiết lập IsLoggedIn là false
-        //        return;
-        //    }
-
-        //    // Kiểm tra đầu vào
-        //    if (string.IsNullOrWhiteSpace(Email.Text) || string.IsNullOrWhiteSpace(Password.Password))
-        //    {
-        //        IsLoggedIn = false; // Nếu không có đầu vào, không cho phép đăng nhập
-        //        return;
-        //    }
-
-
-        //    if (_accountBLL.AuthenticateAccount(email, password, out permissionID))
-        //    {
-        //        IsLoggedIn = true;
-        //        // Tài khoản và mật khẩu đúng
-        //        switch (permissionID)
-        //        {
-        //            case 1:
-        //                openAdminForm(email, new[] { permissionID.ToString() }.ToList());
-        //                break;
-        //            case 2:
-        //                openUserForm(email, new[] { permissionID.ToString() }.ToList());
-        //                break;
-        //            default:
-        //                MessageBox.Show("Invalid permission", "Error");
-        //                break;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        IsLoggedIn = false;
-        //        MessageBox.Show("Invalid account", "Error");
-        //    }
-
-        //}
         public void Button_Click(object sender, RoutedEventArgs e)
         {
-            string email = txtEmail.Text;
-            string password = txtPassword.Password;
+            string email = Email.Text;
+            string password = Password.Password;
 
             int permissionID;
             IsLoggedIn = true;
             // Kiểm tra xem Email và Password có null không
-            if (txtEmail == null || txtPassword == null)
+            if (Email == null || Password == null)
             {
                 IsLoggedIn = false; // Nếu điều khiển là null, thiết lập IsLoggedIn là false
                 return;
@@ -244,12 +164,5 @@ namespace GUI
                 MessageBox.Show("Invalid account", "Error");
             }
         }
-
-
-
-        //public void Button_Click(object value1, object value2)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }
