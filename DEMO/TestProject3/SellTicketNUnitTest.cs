@@ -14,14 +14,14 @@ namespace Tests
     public class SellTicketTests
     {
         private Mock<BookingTicket_BLL> _mockSellTicketBLL;
-        private Window6 _sellTicketWindow;
+       // private Window6 _sellTicketWindow;
         private SellingTicketDTO _ticketDTO;
 
         [SetUp]
         public void SetUp()
         {
             _mockSellTicketBLL = new Mock<BookingTicket_BLL>();
-            _sellTicketWindow = new Window6();
+           // _sellTicketWindow = new Window6();
             _ticketDTO = new SellingTicketDTO();
         }
 
@@ -43,6 +43,8 @@ namespace Tests
         [TestCase("John Doe", true)]
         [TestCase(" ", false)]  // Invalid case: empty name
         [TestCase("", false)]  // Invalid case: null name
+        #endregion
+
         public void TestCustomerName_ShouldBeValid(string name, bool isValid)
         {
             // Arrange
@@ -59,12 +61,12 @@ namespace Tests
                 Assert.IsTrue(string.IsNullOrEmpty(_ticketDTO.CustomerName));
             }
         }
-        #endregion
 
         #region Test Cases for Phone Number
         [TestCase(1234567890, true)] // Valid phone
         [TestCase(0, false)]          // Invalid phone (0 is not a valid phone number)
         [TestCase(12345, false)]      // Invalid phone (less than 10 digits)
+        #endregion
         public void TestPhoneNumber_ShouldBeValid(int phone, bool isValid)
         {
             // Arrange
@@ -81,7 +83,6 @@ namespace Tests
                 Assert.That(phone < 1000000000 || phone > 9999999999, Is.True); // Optional: add validation for phone length
             }
         }
-        #endregion
 
         #region Test Cases for Email
         [TestCase("john.doe@gmail.com", true)]  // Valid email
