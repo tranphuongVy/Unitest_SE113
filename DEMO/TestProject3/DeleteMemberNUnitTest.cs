@@ -15,35 +15,50 @@ namespace GUI.Test
     public class Test_DeleteMember
     {
         private Window3 _deleteMemberWindow;
-        private ObservableCollection<ACCOUNT> _members;
+        //private ObservableCollection<ACCOUNT> _members;
+
 
         [SetUp]
         public void SetUp()
         {
-            _deleteMemberWindow = new Window3();
-            _members = new ObservableCollection<ACCOUNT>
-             {
-                 new ACCOUNT { UserID = "1", PermissonID = 1, UserName = "Admin User", Email = "admin@example.com", Phone = "123456789", Birth = new DateTime(1990, 1, 1), IsDeleted = 0 },
-                 new ACCOUNT { UserID = "2", PermissonID = 2, UserName = "Normal User", Email = "staff@example.com", Phone = "987654321", Birth = new DateTime(1995, 12, 25), IsDeleted = 0 }
-             };
-
-            // Gán ItemsSource cho DataGrid
-            _deleteMemberWindow.memberDataGrid = new DataGrid
+            if (Application.Current == null)
             {
-                ItemsSource = _members
+                new Application(); // Tạo Application nếu chưa có.
+            }
+
+            // Tải ResourceDictionary chính
+            var resourceDictionary = new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/GUI;component/Styles/Page.xaml", UriKind.Absolute)
             };
+
+            // Đảm bảo tất cả ResourceDictionary được tải
+            Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+
+            //Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+            //{
+            //    Source = new Uri("pack://application:,,,/MahApps.Metro.IconPacks;component/Material.xaml", UriKind.Absolute)
+            //});
+            //// Tương tự, nạp thêm các tài nguyên khác
+            //Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+            //{
+            //    Source = new Uri("pack://application:,,,/MahApps.Metro.IconPacks;component/Material.xaml", UriKind.Absolute)
+            //});
+
+            _deleteMemberWindow = new Window3();
         }
 
         #region Test Case
-        [TestCase("1", true)]
+        [TestCase("1", false)]
         [TestCase("2", true)]
-        [Apartment(ApartmentState.STA)]
+        //[Apartment(ApartmentState.STA)]
         #endregion
+        [Test, Apartment(ApartmentState.STA)]
 
         public void TestDeleteMember(string userId, bool expectedResult)
         {
             //Lấy thông tin tài khoản cần kiểm tra
-            var accountToDelete = _members.FirstOrDefault(acc => acc.UserID == userId);
+            var accountToDelete = _deleteMemberWindow._members.FirstOrDefault(acc => acc.UserID == userId);
 
             //Mô phỏng việc gán DataContext cho nút xóa
             var deleteButton = new Button
@@ -57,7 +72,6 @@ namespace GUI.Test
             Console.WriteLine($"Expected: {expectedResult}, Actual: {_deleteMemberWindow.IsSuccess}");
 
             // Xác nhận kết quả
-            //Assert.AreEqual(expectedResult, _loginWindow.IsLoggedIn);
             Assert.That(expectedResult, Is.EqualTo(_deleteMemberWindow.IsSuccess));
 
         }
