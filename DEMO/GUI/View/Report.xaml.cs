@@ -102,6 +102,22 @@ namespace GUI.View
             {
                 return "Please enter a Year!";
             }
+            foreach (char c in Month_TabMonth.Text)
+            {
+                if (char.IsLetter(c))
+                {
+
+                    return "Month error";
+                }
+            }
+            foreach (char c in Year_TabMonth.Text)
+            {
+                if (char.IsLetter(c))
+                {
+
+                    return "Year error";
+                }
+            }
             if (Convert.ToInt32(Month_TabMonth.Text) <= 0 || Convert.ToInt32(Month_TabMonth.Text) > 12)
             {
                 return "Please enter Month from 1 to 12";
@@ -114,6 +130,7 @@ namespace GUI.View
             {
                 return "Year exceeds the current year";
             }
+            
             return string.Empty;
         }
 
@@ -175,8 +192,9 @@ namespace GUI.View
             TotalRevenue_Month.Text = total.ToString();
         }
 
-        public string ValidateInputTabYear()
+        public string ValidateInputTabYear(string year)
         {
+            Year_TabYear.Text = year;
             if (Year_TabYear.Text.ToString() == string.Empty)
             {
                 return "Please enter a Year!";
@@ -187,7 +205,7 @@ namespace GUI.View
             }
             if (Convert.ToInt32(Year_TabYear.Text) >= DateTime.Now.Year + 1)
             {
-                return "Year exceeds the current year (" + DateTime.Now.Year.ToString() + 1 + ")";
+                return "Year exceeds the current year";
             }
             return string.Empty;
         }
@@ -195,7 +213,7 @@ namespace GUI.View
         private void Search_TabYear_Click(object sender, RoutedEventArgs e)
         {
             string state = string.Empty;
-            state = ValidateInputTabYear();
+            state = ValidateInputTabYear(Year_TabYear.Text);
 
             if (state != string.Empty)
             {

@@ -29,7 +29,7 @@ namespace Report
             _report = new Window5();
         }
 
-        #region Test month
+        #region Test Tab Month Vailid
       
         [TestCase("10", "", "Please enter a Year!")]
         [TestCase("12", "2024","")]
@@ -37,8 +37,11 @@ namespace Report
         [TestCase("0", "2024", "Please enter Month from 1 to 12")]
         [TestCase("10", "-2023", "Year cant be negative")]
         [TestCase("", "2023", "Please enter a Month!")]
-        #endregion
-        public void TestTabMonth(string month, string year, string expectedresult)
+        [TestCase("a", "2023", "Month error")]
+        [TestCase("10", "202a", "Year error")]
+
+       
+        public void TestTabMonthValid(string month, string year, string expectedresult)
         {
             // Act
             var result = _report.ValidateInputTabMonth(month, year);
@@ -46,5 +49,18 @@ namespace Report
             // Assert
             Assert.That(result, Is.EqualTo(expectedresult));
         }
+        #endregion
+
+        #region Test Tab Year Vailid
+        [TestCase("", "Please enter a Year!")]
+        [TestCase("-2023", "Year cant be negative")]
+        [TestCase("2025", "Year exceeds the current year")]
+        public void TestTabYearValid(string year, string expectedresult)
+        {
+            var result = _report.ValidateInputTabYear(year);
+            Assert.That(result, Is.EqualTo(expectedresult));
+        }
+        #endregion
+
     }
 }
