@@ -23,7 +23,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using Button = System.Windows.Controls.Button;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace GUI.View
 {
@@ -32,6 +34,17 @@ namespace GUI.View
     /// </summary>
     public partial class Window6 : UserControl
     {
+        //
+        public TextBox ID { get; set; }
+        public TextBox Name { get; set; }
+        public TextBox Phone { get; set; }
+        public TextBox Email { get; set; }
+        public DatePicker Birth { get; set; }
+        public bool IsSuccess { get; private set; }
+
+
+
+        //
         private ObservableCollection<CustomerDTO> ViewCustomerData { get; set; } // Danh sách khách hàng được nhập
         public ObservableCollection<FlightInforDTO> Flights { get; set; } // Danh sách chuyến bay thảo mãn
 
@@ -51,7 +64,14 @@ namespace GUI.View
         public ICommand DeleteCommand { get; private set; }
         public Window6()
         {
-            InitializeComponent();
+            //
+            ID=new TextBox();
+            Name = new TextBox();
+            Phone=new TextBox();
+            Email = new TextBox();
+            Birth=new DatePicker();
+            //
+            //InitializeComponent();
             //this.Loaded += Popup_Loaded;
             //Application.Current.Deactivated += Popup_Deactivated;
 
@@ -213,36 +233,43 @@ namespace GUI.View
             {
                 if(customer.CustomerName == string.Empty)
                 {
+                    IsSuccess=false;
                     return "Please enter Customer Name";
                 }
                 foreach (char c in customer.ID)
                 {
                     if (char.IsLetter(c))
                     {
+                        IsSuccess = false;
                         return "Invalid ID";
                     }
                 }
                 if (customer.ID.Length != 12)
                 {
+                    IsSuccess = false;
                     return "CCCD has 12 number";
                 }  
                 if (customer.Birth == null)
                 {
+                    IsSuccess = false;
                     return "Please enter Customer birthday";
                 }
                 foreach (char c in customer.Phone)
                 {
                     if (char.IsLetter(c))
                     {
+                        IsSuccess = false;
                         return "Invalid phone number";
                     }
                 }
                 if(customer.Phone.Length != 10)
                 {
+                    IsSuccess = false;
                     return "Invalid phone number";
                 }
                 if (!IsValidEmail(customer.Email))
                 {
+                    IsSuccess = false;
                     return "Please enter a valid email";
                 }
             }
@@ -294,7 +321,7 @@ namespace GUI.View
             }
         }
 
-        private void Confirm_Click(object sender, RoutedEventArgs e)
+        public void Confirm_Click(object sender, RoutedEventArgs e)
         {
             /*
              Mô tả: Thêm dữ liệu vào DB, nếu thành công xóa toàn bộ dữ liệu trên UI để nhập tiếp
