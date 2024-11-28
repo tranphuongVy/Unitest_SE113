@@ -23,20 +23,20 @@ namespace GUI.View
         public TextBox Phone { get; set; }
         public TextBox Email { get; set; }
         public DatePicker Birth { get; set; }
-        public bool IsSuccess { get;  set; }
+        public bool IsSuccess { get;  set; }        
         public ListView myListView;
 
         public ObservableCollection<CustomerDTO> ViewCustomerData { get; set; }
         public ObservableCollection<FlightInforDTO> Flights { get; set; }
 
-        private FlightDTO selectedFlight { get; set; }
-        private TicketClassDTO selectedTicketClass { get; set; }
+        public FlightDTO selectedFlight { get; set; }
+        public TicketClassDTO selectedTicketClass { get; set; }
 
         private int maxNumTicket = 0;
         private int numTicket = 0;
         private long ticketPrice = 0;
 
-        private ICollectionView customerView;
+        public ICollectionView customerView;
 
         public List<AirportDTO> airports { get; set; }
         private Dictionary<string, string> airportDictionary = new Dictionary<string, string>();
@@ -46,19 +46,25 @@ namespace GUI.View
 
         public Window6()
         {
-            ID = new TextBox();
-            Name = new TextBox();
-            Phone = new TextBox();
-            Email = new TextBox();
-            Birth = new DatePicker();
+            //ID = new TextBox();
+            //Name = new TextBox();
+            //Phone = new TextBox();
+            //Email = new TextBox();
+            //Birth = new DatePicker();
+            myListView=new ListView();
+            selectedFlight = new FlightDTO(); // Khởi tạo nếu nó là null
+            selectedTicketClass = new TicketClassDTO(); // Khởi tạo nếu nó là null
+            ViewCustomerData = new ObservableCollection<CustomerDTO>(); // Khởi tạo nếu nó là null
+            customerView = CollectionViewSource.GetDefaultView(ViewCustomerData); // Khởi tạo nếu nó là null
+
 
             //InitializeComponent();
 
             // Khởi tạo dữ liệu test
             //InitializeTestData();
 
-            customerView = CollectionViewSource.GetDefaultView(ViewCustomerData);
-            myListView.ItemsSource = customerView;
+            //customerView = CollectionViewSource.GetDefaultView(ViewCustomerData);
+            //myListView.ItemsSource = customerView;
 
             DeleteCommand = new RelayCommand<object>(DeleteItem);
             DataContext = this;
@@ -217,43 +223,36 @@ namespace GUI.View
             {
                 if(customer.CustomerName == string.Empty)
                 {
-                    IsSuccess=false;
                     return "Please enter Customer Name";
                 }
                 foreach (char c in customer.ID)
                 {
                     if (char.IsLetter(c))
                     {
-                        IsSuccess = false;
                         return "Invalid ID";
                     }
                 }
                 if (customer.ID.Length != 12)
                 {
-                    IsSuccess = false;
                     return "CCCD has 12 number";
                 }  
                 if (customer.Birth == null)
                 {
-                    IsSuccess = false;
                     return "Please enter Customer birthday";
                 }
                 foreach (char c in customer.Phone)
                 {
                     if (char.IsLetter(c))
                     {
-                        IsSuccess = false;
                         return "Invalid phone number";
                     }
                 }
                 if(customer.Phone.Length != 10)
                 {
-                    IsSuccess = false;
                     return "Invalid phone number";
                 }
                 if (!IsValidEmail(customer.Email))
                 {
-                    IsSuccess = false;
                     return "Please enter a valid email";
                 }
             }
@@ -313,14 +312,17 @@ namespace GUI.View
             string state = CheckInfo();
             if (state == string.Empty)
             {
+                IsSuccess = true;
                 state = new BLL.InsertProcessor().Add_ListBookingTicket(customerView.OfType<CustomerDTO>().ToList(), selectedFlight, selectedTicketClass, DateTime.Now, 1);
             }
             else
             {
-                var originalTopmost = Application.Current.MainWindow.Topmost;
-                Application.Current.MainWindow.Topmost = true;
-                MessageBox.Show(Application.Current.MainWindow, state, "Error");
-                Application.Current.MainWindow.Topmost = originalTopmost;
+                // var originalTopmost = Application.Current.MainWindow.Topmost;
+                // Application.Current.MainWindow.Topmost = true;
+                // MessageBox.Show(Application.Current.MainWindow, state, "Error");
+                //Application.Current.MainWindow.Topmost = originalTopmost;
+                IsSuccess = false;
+                MessageBox.Show(state,"Error");
                 return;
             }
             if (state == string.Empty)
