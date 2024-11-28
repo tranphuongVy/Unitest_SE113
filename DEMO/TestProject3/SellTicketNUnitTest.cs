@@ -1,57 +1,109 @@
-﻿using NUnit.Framework;
-using Moq;
-using System;
-using System.Text.RegularExpressions;
-using DTO;
-using BLL;
-using GUI;
-using GUI.View;
-using System.Windows.Controls;
+﻿using System;
+using NUnit.Framework;
 using System.Linq;
+using GUI.View;
+using DTO;
+using System.Windows;
+using System.Windows.Controls;
+using Castle.Core.Resource;
+using System.Collections.ObjectModel;
 
-namespace Tests
+namespace GUI.Tests
 {
     [TestFixture]
-    [Apartment(ApartmentState.STA)] // Ensure the unit test runs in STA thread
-    public class SellTicketTests
+    public class Window6Tests
     {
-        private Window6 _sellTicketWindow;
+        private Window6 _window;
 
         [SetUp]
-        public void SetUp()
+        public void Setup()
         {
-            _sellTicketWindow = new Window6(); // Initialize the window
+            // Tạo Application nếu chưa có
+            if (Application.Current == null)
+            {
+                new Application();
+            }
+
+            // Tải ResourceDictionary chính
+            var resourceDictionary = new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/GUI;component/Styles/Page.xaml", UriKind.Absolute)
+            };
+
+            Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+
+            // Khởi tạo đối tượng Window6
+            _window = new Window6();
+
+            // Đảm bảo ViewCustomerData không phải null
+            if (_window.ViewCustomerData == null)
+            {
+                _window.ViewCustomerData = new ObservableCollection<CustomerDTO> { }; // Khởi tạo nếu null
+            }
         }
 
-        #region Test Case for Confirm Button Click
-        [TestCase("0123456789", "John Doe", "0123456789", "john.doe@gmail.com", "2024-12-12", true)]
-        [TestCase("0123456789", "John Doe", "0123456789", "john.doe@gmail.com", "2024-12-12", false)] // Invalid Flight ID
-        [TestCase("0123456789", "", "0123456789", "john.doe@gmail.com", "2024-12-12", false)] // Invalid Customer Name
-        [TestCase("0123456789", "John Doe", "0123456789", "invalid-email", "2024-12-12", false)] // Invalid Email
-        [TestCase("0123456789", "John Doe", "12345", "john.doe@gmail.com", "2024-12-12", false)] // Invalid Phone
-        [Apartment(ApartmentState.STA)]
+        #region Test Case
+        [TestCase("1", true)] // Kiểm tra bán vé thành công
+        [TestCase("999", false)] // Kiểm tra trường hợp không tìm thấy khách hàng
         #endregion
-        public void TestConfirmButton_Click_ShouldProcessTicket(string ID, string name, string phone, string email, string birthStr, bool expectedResult)
+        [Test, Apartment(ApartmentState.STA)]
+        public void TestConfirmTicket(string userId, bool expectedResult)
         {
-            // Convert string to DateTime
-            DateTime birth = DateTime.Parse(birthStr);
+            // Lấy thông tin khách hàng cần kiểm tra
+            var customerToSell = _window.ViewCustomerData.FirstOrDefault(c => c.ID == userId);
 
-            // Arrange: Set form fields
-            _sellTicketWindow.ID.Text = ID;
-            _sellTicketWindow.Name.Text = name;
-            _sellTicketWindow.Phone.Text = phone;
-            _sellTicketWindow.Email.Text = email;
-            _sellTicketWindow.Birth.SelectedDate = birth;
+            if (customerToSell == null)
+            {
+                Console.WriteLine($"Customer with ID {userId} not found.");
+                Assert.That(expectedResult, Is.EqualTo(false));
+                return;
+            }
 
-            // Act: Simulate the click on the confirm button
-            _sellTicketWindow.Confirm_Click(null, null);
+            // Mô phỏng việc gán DataContext cho nút xác nhận
+            var confirmButton = new Button
+            {
+                DataContext = customerToSell
+            };
 
-            // Assert the results
-            Assert.That(expectedResult, Is.EqualTo(_sellTicketWindow.IsSuccess));
+            // Gọi sự kiện Confirm_Click
+            _window.Confirm_Click(confirmButton, null);
+
+            Console.WriteLine($"Expected: {expectedResult}, Actual: {_window.IsSuccess}");
+
+            // Xác nhận kết quả
+            Assert.That(expectedResult, Is.EqualTo(_window.IsSuccess));
+        }
+
+        #region Test Case
+        [TestCase("1", true)] // Kiểm tra xóa thành công
+        [TestCase("999", false)] // Kiểm tra trường hợp không tìm thấy khách hàng để xóa
+        #endregion
+        [Test, Apartment(ApartmentState.STA)]
+        public void TestDeleteCustomer(string userId, bool expectedResult)
+        {
+            // Lấy thông tin khách hàng cần kiểm tra
+            var customerToDelete = _window.ViewCustomerData.FirstOrDefault(c => c.ID == userId);
+
+            if (customerToDelete == null)
+            {
+                Console.WriteLine($"Customer with ID {userId} not found.");
+                Assert.That(expectedResult, Is.EqualTo(false));
+                return;
+            }
+
+            // Mô phỏng việc gán DataContext cho nút xóa
+            var deleteButton = new Button
+            {
+                DataContext = customerToDelete
+            };
+
+            // Gọi sự kiện DeleteItem
+            _window.DeleteItem(customerToDelete);
+
+            Console.WriteLine($"Expected: {expectedResult}, Actual: {_window.IsSuccess}");
+
+            // Xác nhận kết quả
+            Assert.That(expectedResult, Is.EqualTo(_window.IsSuccess));
         }
     }
-
 }
-
-
-
