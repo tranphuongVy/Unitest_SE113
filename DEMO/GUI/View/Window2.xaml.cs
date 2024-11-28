@@ -34,7 +34,7 @@ namespace GUI.View
         public List<AirportDTO> airports { get; set; }
         public Window2()
         {
-            InitializeComponent();
+            // InitializeComponent();
             var converter = new BrushConverter();
 
             FlightsDataGrid.ItemsSource = flights;
@@ -103,11 +103,11 @@ namespace GUI.View
             }
 
             // Check if SourceAirport or DestinationAirport are empty
-            /*if (IsEmpty(a) || IsEmpty(b))
+            if (IsEmpty(a) || IsEmpty(b))
             {
                 MessageBox.Show("Source or Destination airport cannot be empty.");
                 return;
-            }*/
+            }
 
             // 2 Giá trị dưới là min và max cho phép của SQL
             DateTime startDate = StartDay.SelectedDate.HasValue ? StartDay.SelectedDate.Value.Date : new DateTime(1753, 1, 1, 0, 0, 0);
@@ -131,6 +131,18 @@ namespace GUI.View
 
         }
 
+        //<<<<<<<<<<<====================FUNCTION TO TEST=============================>>>>>>>>>>>>>>
+
+
+
+        public string EmptyAirportCheck(string sourceAirport, string destinationAirport)
+        {
+            if (string.IsNullOrEmpty(sourceAirport) || string.IsNullOrEmpty(destinationAirport))
+            {
+                return "Source or Destination airport cannot be empty.";
+            }
+            return "Correct";
+        }
 
     }
 }

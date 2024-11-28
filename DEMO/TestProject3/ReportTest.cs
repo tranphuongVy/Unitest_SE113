@@ -14,7 +14,7 @@ namespace Report
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class Report_MonthTest
+    public class Report_Test
     {
         private Mock<ReportBLL> mockreportBLL;
         private ReportByMonthDTO reportByMonth;
@@ -29,7 +29,7 @@ namespace Report
             _report = new Window5();
         }
 
-        #region Test Tab Month Vailid
+        #region Test Tab Month
       
         [TestCase("10", "", "Please enter a Year!")]
         [TestCase("12", "2024","")]
@@ -39,7 +39,6 @@ namespace Report
         [TestCase("", "2023", "Please enter a Month!")]
         [TestCase("a", "2023", "Month error")]
         [TestCase("10", "202a", "Year error")]
-
        
         public void TestTabMonthValid(string month, string year, string expectedresult)
         {
@@ -51,7 +50,7 @@ namespace Report
         }
         #endregion
 
-        #region Test Tab Year Vailid
+        #region Test Tab Year
         [TestCase("", "Please enter a Year!")]
         [TestCase("-2023", "Year cant be negative")]
         [TestCase("2025", "Year exceeds the current year")]
