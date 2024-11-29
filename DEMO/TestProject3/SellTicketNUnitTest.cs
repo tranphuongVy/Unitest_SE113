@@ -1,109 +1,127 @@
-﻿using System;
-using NUnit.Framework;
-using System.Linq;
+﻿using DTO;
 using GUI.View;
-using DTO;
-using System.Windows;
-using System.Windows.Controls;
-using Castle.Core.Resource;
+using Moq;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows;
+using static GUI.View.Window3;
+using System.Windows.Controls;
 
-namespace GUI.Tests
+namespace TestProject3
 {
     [TestFixture]
-    public class Window6Tests
+    public class SellTicketNUnitTest
     {
-        private Window6 _window;
+        private Window6 sellTicketWindow;
+        private Window6 deleteItemWindow;
 
         [SetUp]
         public void Setup()
         {
-            // Tạo Application nếu chưa có
+            sellTicketWindow = new Window6();
+        }
+        #region Test Case
+        [TestCase("John Doe", "123456789012", "john@gmail.com", true)] // Thông tin hợp lệ
+        [TestCase("Invalid Customer", "999999999999", "invalid@example.com", false)]
+        [TestCase("John Doe", "999999999999", "invalidexample.com", false)]
+        [TestCase("John Doe", "999999", "invalidexample.com", false)]
+        [TestCase("John Doe", "999999999999999as", "invalid@example.com", false)]// Thông tin không hợp lệ
+        #endregion
+        [Test, Apartment(ApartmentState.STA)]
+        public void TestConfirm_Click(string name, string id, string email, bool expectedResult)
+        {
+            // Arrange: Giả lập dữ liệu khách hàng hợp lệ
+            var eventArgs = new RoutedEventArgs();
+            sellTicketWindow.selectedFlight = new FlightDTO
+            {
+                FlightID = "FL002",
+                SourceAirportID = "001",
+                DestinationAirportID = "002",
+                FlightDay = new DateTime(2024, 6, 2),
+                FlightTime = TimeSpan.Parse("09:00:00"),
+                Price = 150.00m,
+                IsDeleted = 0
+            };
+
+            sellTicketWindow.selectedTicketClass = new TicketClassDTO
+            {
+                TicketClassID = "002",
+                TicketClassName = "Business",
+                BaseMultiplier = 1.5m,
+                IsDeleted = 0
+            };
+
+            // Tạo danh sách khách hàng
+            var customerList = new ObservableCollection<CustomerDTO>
+    {
+        new CustomerDTO
+        {
+            CustomerName = name,
+            ID = id,
+            Phone = "0123456789",
+            Email = email,
+            Birth = new DateTime(1990, 5, 15)
+        }
+    };
+
+            // Giả lập khách hàng
+            sellTicketWindow.ViewCustomerData = customerList;
+            sellTicketWindow.customerView = CollectionViewSource.GetDefaultView(sellTicketWindow.ViewCustomerData);
+            //if(sellTicketWindow.myListView == null)
+            //{
+            //    throw new Exception("customerView null");
+            //}    
+            sellTicketWindow.myListView.ItemsSource = sellTicketWindow.customerView;
+            // Act: Gọi Confirm_Click
+            sellTicketWindow.Confirm_Click(this, eventArgs);
+            Console.WriteLine($"Expected: {expectedResult}, Actual: {sellTicketWindow.IsSuccess}");
+
+            // Assert: Tất cả khách hàng hợp lệ thì ResetData được gọi
+            Assert.That(expectedResult, Is.EqualTo(sellTicketWindow.IsSuccess));
+        }
+
+
+        /*--------------------------test delete item------------------------------------*/
+        [SetUp]
+        public void SetUp()
+        {
             if (Application.Current == null)
             {
-                new Application();
+                new Application(); // Tạo Application nếu chưa có.
             }
-
             // Tải ResourceDictionary chính
             var resourceDictionary = new ResourceDictionary
             {
                 Source = new Uri("pack://application:,,,/GUI;component/Styles/Page.xaml", UriKind.Absolute)
             };
-
+            // Đảm bảo tất cả ResourceDictionary được tải
             Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
 
-            // Khởi tạo đối tượng Window6
-            _window = new Window6();
-
-            // Đảm bảo ViewCustomerData không phải null
-            if (_window.ViewCustomerData == null)
-            {
-                _window.ViewCustomerData = new ObservableCollection<CustomerDTO> { }; // Khởi tạo nếu null
-            }
+            deleteItemWindow = new Window6();
         }
 
         #region Test Case
-        [TestCase("1", true)] // Kiểm tra bán vé thành công
-        [TestCase("999", false)] // Kiểm tra trường hợp không tìm thấy khách hàng
+        [TestCase("123456789012111", false)]
+        [TestCase("123456789013", true)]
+        //[Apartment(ApartmentState.STA)]
         #endregion
         [Test, Apartment(ApartmentState.STA)]
-        public void TestConfirmTicket(string userId, bool expectedResult)
+        public void TestDeleteMember(string userId, bool expectedResult)
         {
-            // Lấy thông tin khách hàng cần kiểm tra
-            var customerToSell = _window.ViewCustomerData.FirstOrDefault(c => c.ID == userId);
+            // Tìm khách hàng cần xóa
+            var accountToDelete = deleteItemWindow.ViewCustomerData.FirstOrDefault(acc => acc.ID == userId);
 
-            if (customerToSell == null)
-            {
-                Console.WriteLine($"Customer with ID {userId} not found.");
-                Assert.That(expectedResult, Is.EqualTo(false));
-                return;
-            }
+            // Gọi phương thức DeleteItem
+            deleteItemWindow.DeleteItem(accountToDelete);
 
-            // Mô phỏng việc gán DataContext cho nút xác nhận
-            var confirmButton = new Button
-            {
-                DataContext = customerToSell
-            };
-
-            // Gọi sự kiện Confirm_Click
-            _window.Confirm_Click(confirmButton, null);
-
-            Console.WriteLine($"Expected: {expectedResult}, Actual: {_window.IsSuccess}");
-
-            // Xác nhận kết quả
-            Assert.That(expectedResult, Is.EqualTo(_window.IsSuccess));
-        }
-
-        #region Test Case
-        [TestCase("1", true)] // Kiểm tra xóa thành công
-        [TestCase("999", false)] // Kiểm tra trường hợp không tìm thấy khách hàng để xóa
-        #endregion
-        [Test, Apartment(ApartmentState.STA)]
-        public void TestDeleteCustomer(string userId, bool expectedResult)
-        {
-            // Lấy thông tin khách hàng cần kiểm tra
-            var customerToDelete = _window.ViewCustomerData.FirstOrDefault(c => c.ID == userId);
-
-            if (customerToDelete == null)
-            {
-                Console.WriteLine($"Customer with ID {userId} not found.");
-                Assert.That(expectedResult, Is.EqualTo(false));
-                return;
-            }
-
-            // Mô phỏng việc gán DataContext cho nút xóa
-            var deleteButton = new Button
-            {
-                DataContext = customerToDelete
-            };
-
-            // Gọi sự kiện DeleteItem
-            _window.DeleteItem(customerToDelete);
-
-            Console.WriteLine($"Expected: {expectedResult}, Actual: {_window.IsSuccess}");
-
-            // Xác nhận kết quả
-            Assert.That(expectedResult, Is.EqualTo(_window.IsSuccess));
+            // Kiểm tra trạng thái thành công
+            Console.WriteLine($"Expected: {expectedResult}, Actual: {deleteItemWindow.IsSuccess1}");
+            Assert.That(deleteItemWindow.IsSuccess1, Is.EqualTo(expectedResult));
         }
     }
 }

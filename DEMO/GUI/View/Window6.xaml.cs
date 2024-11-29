@@ -23,7 +23,9 @@ namespace GUI.View
         public TextBox Phone { get; set; }
         public TextBox Email { get; set; }
         public DatePicker Birth { get; set; }
-        public bool IsSuccess { get;  set; }        
+        public bool IsSuccess { get;  set; }
+        public bool IsSuccess1 { get; set; }
+        public Button deleteButton;
         public ListView myListView;
 
         public ObservableCollection<CustomerDTO> ViewCustomerData { get; set; }
@@ -46,11 +48,6 @@ namespace GUI.View
 
         public Window6()
         {
-            //ID = new TextBox();
-            //Name = new TextBox();
-            //Phone = new TextBox();
-            //Email = new TextBox();
-            //Birth = new DatePicker();
             myListView=new ListView();
             selectedFlight = new FlightDTO(); // Khởi tạo nếu nó là null
             selectedTicketClass = new TicketClassDTO(); // Khởi tạo nếu nó là null
@@ -58,63 +55,40 @@ namespace GUI.View
             customerView = CollectionViewSource.GetDefaultView(ViewCustomerData); // Khởi tạo nếu nó là null
 
 
-            //InitializeComponent();
-
-            // Khởi tạo dữ liệu test
-            //InitializeTestData();
-
-            //customerView = CollectionViewSource.GetDefaultView(ViewCustomerData);
-            //myListView.ItemsSource = customerView;
-
             DeleteCommand = new RelayCommand<object>(DeleteItem);
             DataContext = this;
         }
 
         private void InitializeTestData()
         {
-            // Dữ liệu test sân bay
-            airports = new List<AirportDTO>
-            {
-                new AirportDTO { AirportID = "S101", AirportName = "Noi Bai" },
-                new AirportDTO { AirportID = "D201", AirportName = "Tan Son Nhat" },
-                new AirportDTO { AirportID = "S102", AirportName = "Da Nang" },
-                new AirportDTO { AirportID = "D202", AirportName = "Cam Ranh" }
-            };
-
-            airportDictionary = airports.ToDictionary(a => a.AirportID, a => a.AirportName);
-
-            // Dữ liệu test hạng vé
-            ticketClasses = new List<TicketClassDTO>
-            {
-                new TicketClassDTO { TicketClassID = "C1", TicketClassName = "Economy" },
-                new TicketClassDTO { TicketClassID = "C2", TicketClassName = "Business" }
-            };
-
-            ticketClassDictionary = ticketClasses.ToDictionary(tc => tc.TicketClassID, tc => tc.TicketClassName);
-
-            // Dữ liệu test chuyến bay
-            Flights = new ObservableCollection<FlightInforDTO>
-            {
-                new FlightInforDTO { Flight = new FlightDTO { FlightID = "FL1001", SourceAirportID = "S101", DestinationAirportID = "D201", FlightDay = DateTime.Now.AddDays(1), FlightTime = TimeSpan.FromHours(2), Price = 1000000 }, bookedTickets = 50, emptySeats = 150 },
-                new FlightInforDTO { Flight = new FlightDTO { FlightID = "FL1002", SourceAirportID = "S102", DestinationAirportID = "D202", FlightDay = DateTime.Now.AddDays(2), FlightTime = TimeSpan.FromHours(3), Price = 1200000 }, bookedTickets = 30, emptySeats = 170 }
-            };
 
             // Dữ liệu test khách hàng
             ViewCustomerData = new ObservableCollection<CustomerDTO>
             {
-                new CustomerDTO { ID = "123456789012", CustomerName = "Nguyen Van A", Phone = "0912345678", Email = "nguyenvana@gmail.com", Birth = new DateTime(1990, 1, 1) },
-                new CustomerDTO { ID = "123456789013", CustomerName = "Tran Thi B", Phone = "0923456789", Email = "tranthib@gmail.com", Birth = new DateTime(1992, 2, 2) }
+                new CustomerDTO { ID = "123456789012", CustomerName = "Nguyen Van A", Email = "nguyenvana@gmail.com"},
+                new CustomerDTO { ID = "123456789013", CustomerName = "Tran Thi B", Email = "tranthib@gmail.com"}
             };
         }
         public void DeleteItem(object parameter)
         {
             var itemToRemove = parameter as CustomerDTO;
-            if (itemToRemove != null)
+            if (itemToRemove != null && ViewCustomerData.Contains(itemToRemove))
             {
-                ViewCustomerData.Remove(itemToRemove);
-                numTicket = ViewCustomerData.Count;
-                TicketQuantity.Text = numTicket.ToString();
-                TotalPrice.Text = (numTicket * ticketPrice).ToString() + "  VND";
+                if (ViewCustomerData.Contains(itemToRemove))
+                {
+                    ViewCustomerData.Remove(itemToRemove);
+                    numTicket = ViewCustomerData.Count;
+                    TicketQuantity.Text = numTicket.ToString();
+                    TotalPrice.Text = (numTicket * ticketPrice).ToString() + "  VND";
+
+                    // Cập nhật trạng thái thành công
+                    IsSuccess1 = true;
+                }
+                else
+                {
+                    // Không tìm thấy khách hàng trong danh sách
+                    IsSuccess1 = false;
+                }
             }
         }
 
