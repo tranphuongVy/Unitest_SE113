@@ -390,10 +390,16 @@ namespace GUI.View
 
         public bool PositiveIntegerCheck(string str)
         {
-            // Biểu thức chính quy để kiểm tra ký tự đặc biệt
-            Regex regex = new Regex("[^0-9.]");
+            // Loại bỏ khoảng trắng ở đầu và cuối chuỗi
+            str = str.Trim();
+
+            // Biểu thức chính quy để kiểm tra số thực dương
+            Regex regex = new Regex(@"^0*[1-9]\d*(\.\d+)?$");
+
+            // Trả về true nếu chuỗi là số thực dương hợp lệ
             return regex.IsMatch(str);
         }
+
 
         public string EmptyAndCharNewMultiplierCheck(string input)
         {
@@ -411,12 +417,17 @@ namespace GUI.View
 
         public string InputTicketClassAndMultipilerCheck(string inputTicketClass, string inputMultiplier)
         {
+            if (string.IsNullOrWhiteSpace(inputMultiplier))
+            {
+                return ("Please enter the multiplier of the ticket class. Error");
+
+            }
             if (HasSpecialCharacters(inputTicketClass))
             {
                 return ("Ticket class' name has special character");
                 
             }
-            if (PositiveIntegerChecking(inputMultiplier))
+            if (PositiveIntegerCheck(inputMultiplier)== false)
             {
                 return ("Ticket class'multiplier must be > 0");
                 
@@ -424,11 +435,6 @@ namespace GUI.View
             if (string.IsNullOrWhiteSpace(inputTicketClass))
             {
                 return ("Please enter the ticket class. Error");
-                
-            }
-            if (string.IsNullOrWhiteSpace(inputMultiplier))
-            {
-                return ("Please enter the multiplier of the ticket class. Error");
                 
             }
             return ("All Correct");

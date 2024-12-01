@@ -35,11 +35,16 @@ namespace Report
         [TestCase("12", "2024","")]
         [TestCase("10", "2025", "Year exceeds the current year")]
         [TestCase("0", "2024", "Please enter Month from 1 to 12")]
+        [TestCase("0000", "2024", "Please enter Month from 1 to 12")]
         [TestCase("10", "-2023", "Year cant be negative")]
         [TestCase("", "2023", "Please enter a Month!")]
         [TestCase("a", "2023", "Month error")]
         [TestCase("10", "202a", "Year error")]
-       
+        [TestCase("13", "2023", "Please enter Month from 1 to 12")]
+        [TestCase("12 ", "2024", "")]
+        [TestCase("   12", "2024 ", "")] //space
+        [TestCase("012 ", "2024", "")]
+
         public void TestTabMonthValid(string month, string year, string expectedresult)
         {
             // Act
@@ -54,6 +59,9 @@ namespace Report
         [TestCase("", "Please enter a Year!")]
         [TestCase("-2023", "Year cant be negative")]
         [TestCase("2025", "Year exceeds the current year")]
+        [TestCase("20252", "Year exceeds the current year")]
+        [TestCase("2024","")]
+        [TestCase("  2024 ", "")] //space
         public void TestTabYearValid(string year, string expectedresult)
         {
             var result = _report.ValidateInputTabYear(year);

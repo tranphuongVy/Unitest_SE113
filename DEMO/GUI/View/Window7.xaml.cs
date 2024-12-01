@@ -34,7 +34,7 @@ namespace GUI.View
         public List<AirportDTO> airports { get; set; }
         public Window7()
         {
-            InitializeComponent();
+           /* InitializeComponent();
             var converter = new BrushConverter();
 
             FlightsDataGrid.ItemsSource = flights;
@@ -49,7 +49,7 @@ namespace GUI.View
             SourceAirport.ItemsSource = airports;
             DestinationAirport.ItemsSource = airports;
 
-            LoadFlight();
+            LoadFlight();*/
         }
 
         private void LoadFlight()
@@ -131,6 +131,82 @@ namespace GUI.View
 
         }
 
+        // =================================FUNCTION TO TEST======================
 
+        public string EmptyAirportCheck(string sourceAirport, string destinationAirport)
+        {
+            if (string.IsNullOrEmpty(sourceAirport) || string.IsNullOrEmpty(destinationAirport))
+            {
+                return "Source or Destination airport cannot be empty.";
+            }
+            return "";
+        }
+
+        private List<Flight> flightscheck = new List<Flight>();
+        private ComboBox comboBoxSource = new ComboBox();
+        private ComboBox comboBoxDestination = new ComboBox();
+        private ListBox listBoxResults = new ListBox();
+        public void CreateData()
+        {
+            flightscheck = new List<Flight>
+            {
+                new Flight("Hanoi", "HoChiMinh", new DateTime(2024, 11, 30), new DateTime(2024, 11, 30, 12, 0, 0)),
+                new Flight("Hanoi", "Danang", new DateTime(2024, 12, 1), new DateTime(2024, 12, 1, 14, 0, 0)),
+                new Flight("HoChiMinh", "Hanoi", new DateTime(2024, 12, 2), new DateTime(2024, 12, 2, 16, 0, 0))
+            };
+
+            // Cập nhật dữ liệu vào ComboBox
+            var airports = flightscheck.SelectMany(f => new[] { f.SourceAirport, f.DestinationAirport }).Distinct().ToList();
+            comboBoxSource.ItemsSource = airports;
+            comboBoxDestination.ItemsSource = airports.ToList();
+        }
+
+        public void ComboBoxSelectionChanged(object sender, EventArgs e)
+        {
+            var source = comboBoxSource.SelectedItem?.ToString();
+            var destination = comboBoxDestination.SelectedItem?.ToString();
+
+            if (!string.IsNullOrEmpty(source) && !string.IsNullOrEmpty(destination))
+            {
+                var matchingFlights = flights
+                    .Where(f => f.SourceAirport == source && f.DestinationAirport == destination)
+                    .ToList();
+
+                if (matchingFlights.Any())
+                {
+                    listBoxResults.ItemsSource = matchingFlights;
+
+                }
+                else
+                {
+                    listBoxResults.ItemsSource = null;
+
+                }
+            }
+        }
     }
 }
+
+public class Flight
+{
+    public string SourceAirport { get; set; }
+    public string DestinationAirport { get; set; }
+    public DateTime StartDay { get; set; }
+    public DateTime EndDay { get; set; }
+
+    public Flight(string source, string destination, DateTime start, DateTime end)
+    {
+        SourceAirport = source;
+        DestinationAirport = destination;
+        StartDay = start;
+        EndDay = end;
+    }
+
+    public string FlightDetails => $"{SourceAirport} -> {DestinationAirport} | {StartDay:dd/MM/yyyy HH:mm} - {EndDay:dd/MM/yyyy HH:mm}";
+
+    internal static ObservableCollection<Flight> ConvertListToObservableCollection(List<FlightInforDTO> flightInformationSearches, Dictionary<string, string> airportDictionary)
+    {
+        throw new NotImplementedException();
+    }
+}
+    

@@ -35,7 +35,7 @@ namespace GUI.View
         public Window2()
         {
             // InitializeComponent();
-            /*var converter = new BrushConverter();
+            var converter = new BrushConverter();
 
             FlightsDataGrid.ItemsSource = flights;
 
@@ -49,7 +49,7 @@ namespace GUI.View
             SourceAirport.ItemsSource = airports;
             DestinationAirport.ItemsSource = airports;
 
-            LoadFlight();*/
+            LoadFlight();
         }
 
         private void LoadFlight()

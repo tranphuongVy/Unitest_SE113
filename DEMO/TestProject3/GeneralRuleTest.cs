@@ -23,28 +23,28 @@ namespace General_Rule
             _rule = new Window10();
         }
 
-    
 
 
-    #region Test Has Special Charaters Fuction 
 
-    [TestCase("Noi Bai@", true)]
-    [TestCase("Noi Bai", false)]
-    [TestCase("[Tan Son Nhat]", true)]
-    [TestCase("Tân Sơn Nhất", false)]
-    [TestCase("Tan So,n Nhat", true)]
+        #region Test Has Special Charaters Fuction 
+        //Return true if string has special charaters
+        [TestCase("Noi Bai@", true)]
+        [TestCase("Noi Bai", false)]
+        [TestCase(" Noi Bai     ", false)] //space
+        [TestCase("[Tan Son Nhat]", true)]
+        [TestCase("Tân Sơn Nhất", false)]
+        [TestCase("Tan So,n Nhat", true)]
 
         public void TestHasSpecialChar(string input, bool expectedresult)
-    {
-        // Act
+        {
+            // Act
 
-        var result = _rule.HasSpecialCharactersCheck(input);
+            var result = _rule.HasSpecialCharactersCheck(input);
 
-        // Assert
-        Assert.That(result, Is.EqualTo(expectedresult));
-    }
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedresult));
+        }
         #endregion
-
 
         #region Test Format String Fuction 
 
@@ -65,12 +65,14 @@ namespace General_Rule
         }
         #endregion
 
-        #region Test Positive Interger Checking Fuction 
-
-        [TestCase("12", false)]
-        [TestCase("-12", true)]
-        [TestCase("tan son nhat", true)]
-        [TestCase("1.2", false)]
+        #region Test Positive Number
+        
+        [TestCase("12", true)]
+        [TestCase("      12 ", true)] //space
+        [TestCase("-12", false)]
+        [TestCase("tan son nhat", false)]
+        [TestCase("1.2", true)]
+        [TestCase("012", true)]
 
 
         public void TestPositiveIntergerChecking(string input, bool expectedresult)
@@ -84,11 +86,15 @@ namespace General_Rule
         }
         #endregion
 
-        #region Test Positive Interger Checking Fuction 
+        #region Test Empty And Character- New Multiplier
 
         [TestCase("12a", "Please re-enter the Multiplier")]
+        [TestCase("a", "Please re-enter the Multiplier")]
         [TestCase("", "")]
         [TestCase("12", "")]
+        [TestCase("02", "")]
+        [TestCase("022", "")]
+        [TestCase(" 12 ", "")] //space
         [TestCase("11 g 12", "Please re-enter the Multiplier")]
 
 
@@ -103,16 +109,22 @@ namespace General_Rule
         }
         #endregion
 
-        #region
-        [TestCase("Thuong Gi@", "2","Ticket class' name has special character")]
+        #region Test Input
+        [TestCase("Thuong Gi@", "2", "Ticket class' name has special character")]
         [TestCase("Thuong Gia", "-12", "Ticket class'multiplier must be > 0")]
         [TestCase("", "2", "Please enter the ticket class. Error")]
-        [TestCase("Thuong Gia","","Please enter the multiplier of the ticket class. Error")]
+        [TestCase("Thuong Gia", " ", "Please enter the multiplier of the ticket class. Error")]
         [TestCase("Thuong Gia", "2.5", "All Correct")]
+        [TestCase("Thuong Gia", "05", "All Correct")]
+        [TestCase("Thuong Gia", "0", "Ticket class'multiplier must be > 0")]
+        [TestCase("Thuong Gia", "000", "Ticket class'multiplier must be > 0")]
+        [TestCase(" Thuong Gia ", "2.5", "All Correct")] //space
+        [TestCase("Thuong Gia", " 2.5 ", "All Correct")] //space
+        [TestCase(" Thuong Gia ", "05", "All Correct")]
 
-        public void TestInputTicketClassAndMultipilerCheck(string inputTicketClass,string inputMultiplier, string expectedresult)
+        public void TestInputTicketClassAndMultipilerCheck(string inputTicketClass, string inputMultiplier, string expectedresult)
         {
-            // Act
+
 
             var result = _rule.InputTicketClassAndMultipilerCheck(inputTicketClass, inputMultiplier);
 
