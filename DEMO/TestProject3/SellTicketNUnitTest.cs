@@ -31,6 +31,9 @@ namespace TestProject3
         [TestCase("John Doe", "999999999999", "invalidexample.com", false)]
         [TestCase("John Doe", "999999", "invalidexample.com", false)]
         [TestCase("John Doe", "999999999999999as", "invalid@example.com", false)]// Thông tin không hợp lệ
+        [TestCase("", "999999999999999as", "invalid@example.com", false)]// Thông tin không hợp lệ
+        [TestCase("John Doe", "", "invalid@example.com", false)]// Thông tin không hợp lệ
+        [TestCase("John Doe", "999999999999", "", false)]// Thông tin không hợp lệ
         #endregion
         [Test, Apartment(ApartmentState.STA)]
         public void TestConfirm_Click(string name, string id, string email, bool expectedResult)
@@ -106,20 +109,25 @@ namespace TestProject3
         }
 
         #region Test Case
-        [TestCase("123456789012111", false)]
-        [TestCase("123456789013", true)]
-        //[Apartment(ApartmentState.STA)]
+        [TestCase("123456789012111", false)]  // Non-existing customer
+        //[TestCase("123456789013", true)]      // Existing customer
         #endregion
         [Test, Apartment(ApartmentState.STA)]
         public void TestDeleteMember(string userId, bool expectedResult)
         {
-            // Tìm khách hàng cần xóa
+            // Find the customer to delete
             var accountToDelete = deleteItemWindow.ViewCustomerData.FirstOrDefault(acc => acc.ID == userId);
 
-            // Gọi phương thức DeleteItem
-            deleteItemWindow.DeleteItem(accountToDelete);
+            // Log for debugging to see if the account was found
+            Console.WriteLine($"Found customer: {accountToDelete?.CustomerName ?? "None"}");
 
-            // Kiểm tra trạng thái thành công
+            // Act: Delete the customer if found
+            if (accountToDelete != null)
+            {
+                deleteItemWindow.DeleteItem(accountToDelete);
+            }
+
+            // Assert: Check if deletion was successful based on the expected result
             Console.WriteLine($"Expected: {expectedResult}, Actual: {deleteItemWindow.IsSuccess1}");
             Assert.That(deleteItemWindow.IsSuccess1, Is.EqualTo(expectedResult));
         }

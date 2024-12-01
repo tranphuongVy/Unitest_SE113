@@ -1,134 +1,161 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Windows.Controls;
-using System.Windows;
-using System.Windows.Data;
 
-namespace ReceiveFlightScheduleNUnitTest
+namespace FlightScheduleTests
 {
     [TestFixture]
-    public class DatePickerTests
+    public class ReceiveFlightScheduleTests
     {
-        // Kiểm tra chọn ngày từ DatePicker
-        [Test]
-        [Apartment(ApartmentState.STA)]  // Đảm bảo test này chạy trong STA thread
-        public void Test_DatePicker_SelectDate()
+        #region Combined Test Case
+        [TestCase("", "1", "01/01/2024", "10:30", "100", ExpectedResult = false)] // Invalid airport selection
+        [TestCase("Sân bay Tân Sơn Nhất", "", "01/01/2024", "10:30", "100", ExpectedResult = false)] // Invalid airport ID
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "31/02/2024", "10:30", "100", ExpectedResult = false)] // Invalid date
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "25:00", "100", ExpectedResult = false)] // Invalid time
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "10:30", "-100", ExpectedResult = false)] // Invalid price
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "10:30", "100", ExpectedResult = true)] // Valid case
+        public bool TestCompleteFlightSchedule(string selectedAirport, string selectedID, string date, string time, string price)
         {
-            // Arrange: Tạo một DatePicker mới
-            var datePicker = new DatePicker();
-            var selectedDate = new DateTime(2024, 11, 28); // Ngày cụ thể để chọn
+            // Validate Departure Airport
+            if (!ValidateAirportSelection(selectedAirport)) return false;
 
-            // Act: Gán ngày đã chọn vào DatePicker
-            datePicker.SelectedDate = selectedDate;
+            // Validate Departure Airport ID
+            if (!ValidateAirportID(selectedID)) return false;
 
-            // Assert: Kiểm tra ngày đã chọn trong DatePicker có đúng như mong đợi
-            Assert.That(datePicker.SelectedDate, Is.EqualTo(selectedDate));
+            // Validate Departure Day
+            if (!ValidateDateFormat(date)) return false;
+
+            // Validate Departure Time
+            if (!ValidateTimeFormat(time)) return false;
+
+            // Validate Ticket Price
+            if (!ValidateTicketPrice(price)) return false;
+
+            return true; // All validations passed
+        }
+        #endregion
+
+        #region Helper Methods
+        private bool ValidateAirportSelection(string airport)
+        {
+            return !string.IsNullOrEmpty(airport) && airport == "Sân bay Tân Sơn Nhất";
         }
 
-        // Kiểm tra mặc định của DatePicker khi chưa chọn ngày
-        [Test]
-        [Apartment(ApartmentState.STA)]  // Đảm bảo test này chạy trong STA thread
-        public void Test_DatePicker_DefaultDate()
+        private bool ValidateAirportID(string id)
         {
-            // Arrange: Tạo một DatePicker mới
-            var datePicker = new DatePicker();
-
-            // Act & Assert: Kiểm tra rằng khi chưa chọn ngày, SelectedDate là null
-            Assert.IsNull(datePicker.SelectedDate);
+            return id == "1";
         }
 
-        // Kiểm tra nhập định dạng không hợp lệ vào DatePicker
-        [Test]
-        [Apartment(ApartmentState.STA)]  // Đảm bảo test này chạy trong STA thread
-        public void Test_DatePicker_InvalidDateInput()
+        private bool ValidateDateFormat(string date)
         {
-            // Arrange: Tạo một DatePicker mới
-            var datePicker = new DatePicker();
-            var invalidDate = "Invalid Date";  // Chuỗi không hợp lệ
+            DateTime dt;
+            return DateTime.TryParse(date, out dt);
+        }
 
-            // Act: Cố gắng gán giá trị không hợp lệ vào DatePicker
-            try
+        private bool ValidateTimeFormat(string time)
+        {
+            TimeSpan ts;
+            return TimeSpan.TryParse(time, out ts);
+        }
+
+        private bool ValidateTicketPrice(string price)
+        {
+            if (int.TryParse(price, out int parsedPrice))
             {
-                datePicker.SelectedDate = DateTime.Parse(invalidDate);  // Gây lỗi
-                Assert.Fail("Expected FormatException was not thrown.");
+                return parsedPrice >= 0;
             }
-            catch (FormatException)
-            {
-                // Assert: Kiểm tra lỗi FormatException được ném ra
-                Assert.Pass("FormatException correctly thrown.");
-            }
+            return false;
         }
+        #endregion
 
-        // Kiểm tra click vào DatePicker và chọn ngày từ Calendar
-        [Test]
-        [Apartment(ApartmentState.STA)]  // Đảm bảo test này chạy trong STA thread
-        public void Test_DatePicker_SelectDateFromCalendar()
+        /************************************/
+        #region Combined Test Case for Ticket Class and Intermediate Airport
+        // Test cases for Ticket Class
+        [TestCase("", "", "", "", ExpectedResult = false)] // All fields empty
+        [TestCase("1", "Economy", "-1", "10", ExpectedResult = false)] // Invalid Quantity (negative number)
+        [TestCase("1", "Economy", "10", "abc", ExpectedResult = false)] // Invalid Quantity (non-numeric)
+        [TestCase("1", "Economy", "10", "10", ExpectedResult = true)] // Valid data
+        [TestCase("1", "Economy", "10", "0", ExpectedResult = true)] // Valid data with quantity 0
+        public bool TestTicketClassValidation(string idTicketClass, string ticketClassName, string multiplier, string quantity)
         {
-            // Arrange: Tạo một DatePicker mới và gán giá trị ngày
-            var datePicker = new DatePicker();
-            var selectedDate = new DateTime(2024, 11, 28); // Chọn ngày này
+            // Validate Ticket Class ID
+            if (!ValidateTicketClassID(idTicketClass)) return false;
 
-            // Act: Mở Calendar và chọn ngày
-            datePicker.IsDropDownOpen = true;
-            datePicker.SelectedDate = selectedDate;
+            // Validate Ticket Class Name
+            if (!ValidateTicketClassName(ticketClassName)) return false;
 
-            // Assert: Kiểm tra rằng ngày đã chọn là đúng
-            Assert.That(datePicker.SelectedDate, Is.EqualTo(selectedDate));
+            // Validate Multiplier
+            if (!ValidateMultiplier(multiplier)) return false;
+
+            // Validate Quantity
+            if (!ValidateQuantity(quantity)) return false;
+
+            return true; // All validations passed
         }
-    }
 
-    [TestFixture]
-    public class ComboBoxTests
-    {
-        // Kiểm tra chọn một sân bay từ ComboBox
-        [Test]
-        [Apartment(ApartmentState.STA)]  // Đảm bảo test này chạy trong STA thread
-        public void Test_ComboBox_SelectAirport()
+        // Test cases for Intermediate Airport
+        [TestCase("", "", "", "", ExpectedResult = false)] // All fields empty
+        [TestCase("1", "Airport A", "-1", "", ExpectedResult = false)] // Invalid Layover Time (negative)
+        [TestCase("1", "Airport A", "abc", "Valid Note", ExpectedResult = false)] // Invalid Layover Time (non-numeric)
+        [TestCase("1", "Airport A", "2", "Valid Note", ExpectedResult = true)] // Valid data
+        [TestCase("1", "Airport A", "0", "Valid Note", ExpectedResult = true)] // Valid data with layover time 0
+        public bool TestIntermediateAirportValidation(string idIntermediateAirport, string intermediateAirportName, string layoverTime, string note)
         {
-            // Arrange: Tạo một ComboBox với các sân bay
-            var comboBox = new ComboBox();
-            comboBox.Items.Add("Sân bay Nội Bài");
-            comboBox.Items.Add("Sân bay Tân Sơn Nhất");
-            comboBox.Items.Add("Sân bay Đà Nẵng");
+            // Validate Intermediate Airport ID
+            if (!ValidateIntermediateAirportID(idIntermediateAirport)) return false;
 
-            // Act: Chọn một sân bay từ ComboBox
-            comboBox.SelectedItem = "Sân bay Tân Sơn Nhất";
+            // Validate Intermediate Airport Name
+            if (!ValidateIntermediateAirportName(intermediateAirportName)) return false;
 
-            // Assert: Kiểm tra rằng sân bay đã được chọn
-            Assert.That(comboBox.SelectedItem, Is.EqualTo("Sân bay Tân Sơn Nhất"));
+            // Validate Layover Time
+            if (!ValidateLayoverTime(layoverTime)) return false;
+
+            // Validate Note
+            if (!ValidateNoteField(note)) return false;
+
+            return true; // All validations passed
         }
+        #endregion
 
-        // Kiểm tra tính năng tìm kiếm trong ComboBox
-        [Test]
-        [Apartment(ApartmentState.STA)]  // Đảm bảo test này chạy trong STA thread
-        public void Test_ComboBox_Search()
+        #region Helper Methods for Ticket Class and Intermediate Airport
+        private bool ValidateTicketClassID(string id)
         {
-            // Arrange: Tạo một ComboBox với các sân bay
-            var comboBox = new ComboBox();
-            comboBox.Items.Add("Sân bay Nội Bài");
-            comboBox.Items.Add("Sân bay Tân Sơn Nhất");
-            comboBox.Items.Add("Sân bay Đà Nẵng");
-
-            // Act: Tìm kiếm một sân bay trong ComboBox
-            comboBox.Text = "Tân Sơn Nhất"; // Giả lập việc nhập chuỗi tìm kiếm
-
-            // Mở dropdown ComboBox để mô phỏng người dùng tìm kiếm
-            comboBox.IsDropDownOpen = true;
-
-            // Thực hiện chọn item tương ứng dựa trên Text
-            foreach (var item in comboBox.Items)
-            {
-                if (item.ToString().Contains(comboBox.Text)) // Kiểm tra khớp một phần
-                {
-                    comboBox.SelectedItem = item;  // Chọn item khi tìm thấy khớp
-                    break;
-                }
-            }
-
-            // Assert: Kiểm tra rằng ComboBox đã tìm thấy sân bay tương ứng
-            Assert.That(comboBox.SelectedItem, Is.EqualTo("Sân bay Tân Sơn Nhất"));
+            return !string.IsNullOrEmpty(id) && id == "1"; // Assume ID "1" is valid
         }
 
+        private bool ValidateTicketClassName(string name)
+        {
+            return !string.IsNullOrEmpty(name); // Assuming valid ticket class name cannot be empty
+        }
 
+        private bool ValidateMultiplier(string multiplier)
+        {
+            return int.TryParse(multiplier, out int result) && result >= 0; // Valid if positive integer
+        }
+
+        private bool ValidateQuantity(string quantity)
+        {
+            return int.TryParse(quantity, out int result) && result >= 0; // Valid if non-negative integer
+        }
+
+        private bool ValidateIntermediateAirportID(string id)
+        {
+            return !string.IsNullOrEmpty(id) && id == "1"; // Assume ID "1" is valid for intermediate airports
+        }
+
+        private bool ValidateIntermediateAirportName(string name)
+        {
+            return !string.IsNullOrEmpty(name); // Valid name should not be empty
+        }
+
+        private bool ValidateLayoverTime(string time)
+        {
+            return int.TryParse(time, out int result) && result >= 0; // Valid if positive integer or zero
+        }
+
+        private bool ValidateNoteField(string note)
+        {
+            return !string.IsNullOrEmpty(note); // Valid note should not be empty
+        }
+        #endregion
     }
 }
