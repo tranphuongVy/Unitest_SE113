@@ -44,6 +44,9 @@ namespace GUI.Test
         [TestCase("h@gmail.com", "NgggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiii12341234123456", true)]
         [TestCase("h@gmail.com", "NggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiii12341234123456", true)]
         [TestCase("admin@gmail.com", "                 password1", true)]
+
+        [TestCase("", "", false)]
+
         [Apartment(ApartmentState.STA)]
         #endregion
 
