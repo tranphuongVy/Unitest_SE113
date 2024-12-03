@@ -24,6 +24,7 @@ namespace DAL
             //string strcon = @"Data Source=SPIDEY;Initial Catalog=airplanedb;Integrated Security=True";
             //string strcon = @"Data Source=ZALAW;Initial Catalog=airplanedb;Integrated Security=True";
             string strcon = @"Data Source=172.28.62.1;Initial Catalog=airplanedb;User ID=SA;Password=@Kimyen2004;";
+            //string strcon = @"Data Source=PHUONGVY\SQLEXPRESS;Initial Catalog=airplanedb;Integrated Security=True";
             SqlConnection conn = new SqlConnection(strcon); // khởi tạo connect
             return conn;
         }
