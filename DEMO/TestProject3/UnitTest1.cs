@@ -21,19 +21,32 @@ namespace GUI.Test
         }
 
         #region Test Case
+        //Test email
+        [TestCase("", "N", false)]
+        [TestCase("NguyennnnnnnnVannnnnnnAiiiiiiiiiiiiiiiiiiiiiiiiiiiiii12345678@gmail.com", "N", false)]
+        [TestCase("Admin", "N", false)]
+        [TestCase("h@gmail.com", "N", true)]
+        [TestCase("Admin@gmail.com", "password1", true)]
         [TestCase("admin@gmail.com", "password1", true)]
-        [TestCase("vy@gmail.com", "vy1", true)]
-        [TestCase("user@gmail.com", "wrongpassword", false)]
-        [TestCase("nonexistent@gmail.com", "password123", false)]
+        [TestCase("staff@gmail.com", "password1", true)]
+        [TestCase("notexist@gmail.com", "password1", false)]
+        [TestCase("NguyennnnnnnnVannnnnnnAiiiiiiiiiiiiiiiiiiiiiiiiiiiii12345678@gmail.com", "N", false)]
+        [TestCase("NguyennnnnnnVannnnnnnAiiiiiiiiiiiiiiiiiiiiiiiiiiiii12345678@gmail.com", "N", false)]
+        [TestCase("                 staff@gmail.com", "password1", true)]
+
+        //Test password
         [TestCase("admin@gmail.com", "", false)]
-        [TestCase("", "password123", false)]
-        [TestCase("", "", false)]
-        [TestCase("admin@gmail.com", " ", false)] // Test với khoảng trắng
-        [TestCase(" ", "password123", false)] // Test với khoảng trắng
+        [TestCase("admin@gmail.com", "NgggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiiii12341234123456", false)]
+        [TestCase("admin@gmail.com", "h", true)]
+        [TestCase("admin@gmail.com", "ha", true)]
+        [TestCase("admin@gmail.com", "pássword0", true)]
+        [TestCase("admin@gmail.com", "Password1", true)]
+        [TestCase("h@gmail.com", "NgggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiii12341234123456", true)]
+        [TestCase("h@gmail.com", "NggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiii12341234123456", true)]
+        [TestCase("admin@gmail.com", "                 password1", true)]
         [Apartment(ApartmentState.STA)]
         #endregion
 
-    
         public void TestLogin(string email, string password, bool expectedResult)
         {
             // Thiết lập mock cho phương thức AuthenticateAccount

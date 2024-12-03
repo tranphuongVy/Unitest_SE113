@@ -11,23 +11,19 @@ namespace BLL
 {
     public interface IAddMemberBLL
     {
-        bool Add_Member(ACCOUNT user);
+        void Add_Member(ACCOUNT user, ref string kq);
     }
     public class InsertProcessor: IAddMemberBLL
     {
      
         public InsertProcessor() { }
         // luu booking ticket vao db
-        public bool Add_Member(ACCOUNT user)
+        public void Add_Member(ACCOUNT user, ref string kq)
         {
-            string kq = "";
             kq = new DAL.AccountAccess().SignUp(user);
-            if(kq=="")
-                return true;
-            else
-                return false;
         }
-    public string Add_BookingTicket(CustomerDTO customer, FlightDTO flight, TicketClassDTO ticketClass, DateTime date, int status)
+   
+        public string Add_BookingTicket(CustomerDTO customer, FlightDTO flight, TicketClassDTO ticketClass, DateTime date, int status)
         {
             // luu khach hang
             string processState_InsertCustomer = new DAL.CustomerAsccess().Add_Customer(customer);

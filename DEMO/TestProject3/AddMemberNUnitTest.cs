@@ -21,9 +21,80 @@ namespace GUI.Test
         }
 
         #region Test Case
-        [TestCase("","An","h","0123456789", "true", "password1", "password1", 1, 1, 2000, false)]
-        [TestCase("Nguyễn", "", "h", "0123456789", "true", "password1", "password1", 1, 1, 2000, false)]
-        [TestCase("Nguyễn", "An", "h", "9123456789", "true", "password1", "password1", 1, 1, 2000, false)]
+        // Test first name
+        [TestCase("A@", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, false)]
+        [TestCase("", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, false)]
+        [TestCase("Tháiiiiiiiiiiiiiiiiiiiiiiiiii Annnnnnnnnn", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, false)]
+
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("An", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("Tháiiiiiiiiiiiiiiiiiiiiiiiii Annnnnnnnn", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("Tháiiiiiiiiiiiiiiiiiiiiiiiiii Annnnnnnnn", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("     An       ", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+
+        // Test last name
+        [TestCase("A","A@", "h", "0323456789", "false", "N", "N", 28, 1, 2003, false)]
+        [TestCase("A", "", "h", "0323456789", "false", "N", "N", 28, 1, 2003, false)]
+        [TestCase("A", "Nguyễnnnn Vănnnnnnnnnn Hoàngggg Tháiiiiii ", "h", "0323456789", "false", "N", "N", 28, 1, 2003, false)]
+
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("A", "Aa", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("A", "Nguyễnnn Vănnnnnnnnn Hoàngggg Tháiiiiii", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("A", "Nguyễnnnn Vănnnnnnnnn Hoàngggg Tháiiiiii", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("A", "      Nguyễn Văn       ", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+
+        //Test email
+        [TestCase("A", "A", "Anguyễnvan", "0323456789", "false", "N", "N", 28, 1, 2003, false)]
+        [TestCase("A", "A", "", "0323456789", "false", "N", "N", 28, 1, 2003, false)]
+        [TestCase("A", "A", "NguyennnnnnnnVannnnnnnAiiiiiiiiiiiiiiiiiiiiiiiiiiiiii12345678", "0323456789", "false", "N", "N", 28, 1, 2003, false)]
+
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("A", "A", "NguyennnnnnnnVannnnnnnAiiiiiiiiiiiiiiiiiiiiiiiiiiiii12345678", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("A", "A", "NguyennnnnnnVannnnnnnAiiiiiiiiiiiiiiiiiiiiiiiiiiiii12345678", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("A", "A", "       NguyenVanA112", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+
+        //Test phone
+        [TestCase("A", "A", "h", "qa11231111", "false", "N", "N", 28, 1, 2003, false)]
+        [TestCase("A", "A", "h", "", "false", "N", "N", 28, 1, 2003, false)]
+        [TestCase("A", "A", "h", "012345678", "false", "N", "N", 28, 1, 2003, false)]
+        [TestCase("A", "A", "h", "01234567890", "false", "N", "N", 28, 1, 2003, false)]
+        [TestCase("A", "A", "h", "1777123345", "false", "N", "N", 28, 1, 2003, false)]
+
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("A", "A", "h", "       0777123345     ", "false", "N", "N", 28, 1, 2003, true)]
+
+        //Test position
+        [TestCase("A", "A", "h", "0323456789", "true", "N", "N", 28, 1, 2003, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+
+        //Test password and confirm password
+        [TestCase("A", "A", "h", "0323456789", "false", "", "", 28, 1, 2003, false)]
+        [TestCase("A", "A", "h", "0323456789", "false", "NgggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiiii12341234123456", "NgggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiiii12341234123456", 28, 1, 2003, false)]
+        
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 28, 1, 2003, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "Ng", "Ng", 28, 1, 2003, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "NggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiii12341234123456", "NggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiii12341234123456", 28, 1, 2003, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "NgggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiii12341234123456", "NgggggggggggVannnnnnnnnnnnAiiiiiiiiiiiiiiiiiii12341234123456", 28, 1, 2003, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "       Ngvana1233       ", "       Ngvana1233       ", 28, 1, 2003, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "       Ngvana1233       ", 28, 1, 2003, false)]
+
+        //Test birth
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 28, 2, 2003, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 29, 2, 2004, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 29, 2, 2003, false)]
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 30, 1, 2003, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 30, 4, 2003, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 31, 1, 2003, true)]
+        [TestCase("A", "A", "h", "0323456789", "false", "N", "N", 31, 4, 2003, false)]
+
+
+        [TestCase("A", "A", "Admin", "0323456789", "false", "password1", "password1", 28, 1, 2003, true)]
+        [TestCase("A", "A", "staff", "0323456789", "false", "password1", "password1", 28, 1, 2003, true)]
+        
+        [TestCase("A", "A", "admin", "0323456789", "false", "h", "h", 28, 1, 2003, true)]
+        [TestCase("A", "A", "admin", "0323456789", "false", "ha", "ha", 28, 1, 2003, true)]
+        [TestCase("A", "A", "admin", "0323456789", "false", "pássword0", "pássword0", 28, 1, 2003, true)]
+        [TestCase("A", "A", "admin", "0323456789", "false", "Password1", "Password1", 28, 1, 2003, true)]
 
 
         [Apartment(ApartmentState.STA)]
