@@ -27,8 +27,11 @@ namespace TestProject3
         }
         #region Test Case
         [TestCase("John Doe", "123456789012", "john@gmail.com", true)] // Thông tin hợp lệ
-        [TestCase("Invalid Customer", "999999999999", "invalid@example.com", false)]
+        [TestCase("Invalid Customer @", "999999999999", "invalid@example.com", false)]
+        [TestCase("Invalid Customerrrrrrrrrrrrrrssssssssssaaaaaaadđ", "999999999999", "invalid@example.com", false)]
+        [TestCase("  John Doe  ", "123456789012", "john@gmail.com", true)] // Thông tin hợp lệ
         [TestCase("John Doe", "999999999999", "invalidexample.com", false)]
+        [TestCase("John Doe", "999999999999", "invalidddddddddiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii@example.com", false)]
         [TestCase("John Doe", "999999", "invalidexample.com", false)]
         [TestCase("John Doe", "999999999999999as", "invalid@example.com", false)]// Thông tin không hợp lệ
         [TestCase("", "999999999999999as", "invalid@example.com", false)]// Thông tin không hợp lệ

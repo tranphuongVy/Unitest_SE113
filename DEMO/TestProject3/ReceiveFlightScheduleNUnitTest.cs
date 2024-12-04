@@ -12,7 +12,16 @@ namespace FlightScheduleTests
         [TestCase("Sân bay Tân Sơn Nhất", "1", "31/02/2024", "10:30", "100", ExpectedResult = false)] // Invalid date
         [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "25:00", "100", ExpectedResult = false)] // Invalid time
         [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "10:30", "-100", ExpectedResult = false)] // Invalid price
-        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "10:30", "100", ExpectedResult = true)] // Valid case
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "10:30", "100", ExpectedResult = true)]
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "10:30", "100aq", ExpectedResult = false)]
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "10:30", "100.12", ExpectedResult = false)]
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "10:30", "", ExpectedResult = false)]
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "100:30", "100", ExpectedResult = false)]
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "10a:30", "100", ExpectedResult = false)]
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01/01/2024", "", "100", ExpectedResult = false)]
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "01a/01/2024", "10:30", "100", ExpectedResult = false)]
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "-01/01/2024", "10:30", "100", ExpectedResult = false)]
+        [TestCase("Sân bay Tân Sơn Nhất", "1", "", "10:30", "100", ExpectedResult = false)]
         public bool TestCompleteFlightSchedule(string selectedAirport, string selectedID, string date, string time, string price)
         {
             // Validate Departure Airport
@@ -74,7 +83,11 @@ namespace FlightScheduleTests
         [TestCase("1", "Economy", "-1", "10", ExpectedResult = false)] // Invalid Quantity (negative number)
         [TestCase("1", "Economy", "10", "abc", ExpectedResult = false)] // Invalid Quantity (non-numeric)
         [TestCase("1", "Economy", "10", "10", ExpectedResult = true)] // Valid data
-        [TestCase("1", "Economy", "10", "0", ExpectedResult = true)] // Valid data with quantity 0
+        [TestCase("1", "Economy", "10", "0", ExpectedResult = true)]
+        [TestCase("1", "Economy", "10.17", "abc", ExpectedResult = false)]
+        [TestCase("1", "Economy", "10", "-10", ExpectedResult = false)]
+        [TestCase("1", "Economy", "10", "10.123", ExpectedResult = false)]
+        [TestCase("1", "Economy", "12sqs", "abc", ExpectedResult = false)]
         public bool TestTicketClassValidation(string idTicketClass, string ticketClassName, string multiplier, string quantity)
         {
             // Validate Ticket Class ID
@@ -97,7 +110,9 @@ namespace FlightScheduleTests
         [TestCase("1", "Airport A", "-1", "", ExpectedResult = false)] // Invalid Layover Time (negative)
         [TestCase("1", "Airport A", "abc", "Valid Note", ExpectedResult = false)] // Invalid Layover Time (non-numeric)
         [TestCase("1", "Airport A", "2", "Valid Note", ExpectedResult = true)] // Valid data
-        [TestCase("1", "Airport A", "0", "Valid Note", ExpectedResult = true)] // Valid data with layover time 0
+        [TestCase("1", "Airport A", "0", "Valid Note", ExpectedResult = true)]
+        [TestCase("1", "Airport A", "10.123", "", ExpectedResult = false)]
+        [TestCase("1", "Airport A", "-1", "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", ExpectedResult = false)]
         public bool TestIntermediateAirportValidation(string idIntermediateAirport, string intermediateAirportName, string layoverTime, string note)
         {
             // Validate Intermediate Airport ID
