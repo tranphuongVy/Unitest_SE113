@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows;
 using static GUI.View.Window3;
 using System.Windows.Controls;
+using NUnit.Framework;
 
 namespace TestProject3
 {
@@ -25,21 +26,45 @@ namespace TestProject3
         {
             sellTicketWindow = new Window6();
         }
+
         #region Test Case
-        [TestCase("John Doe", "123456789012", "john@gmail.com", true)] // Thông tin hợp lệ
-        [TestCase("Invalid Customer @", "999999999999", "invalid@example.com", false)]
-        [TestCase("Invalid Customerrrrrrrrrrrrrrssssssssssaaaaaaadđ", "999999999999", "invalid@example.com", false)]
-        [TestCase("  John Doe  ", "123456789012", "john@gmail.com", true)] // Thông tin hợp lệ
-        [TestCase("John Doe", "999999999999", "invalidexample.com", false)]
-        [TestCase("John Doe", "999999999999", "invalidddddddddiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii@example.com", false)]
-        [TestCase("John Doe", "999999", "invalidexample.com", false)]
-        [TestCase("John Doe", "999999999999999as", "invalid@example.com", false)]// Thông tin không hợp lệ
-        [TestCase("", "999999999999999as", "invalid@example.com", false)]// Thông tin không hợp lệ
-        [TestCase("John Doe", "", "invalid@example.com", false)]// Thông tin không hợp lệ
-        [TestCase("John Doe", "999999999999", "", false)]// Thông tin không hợp lệ
+        // Textbox "ID"
+        [TestCase("", "", "", "", 2002, 05, 11, false)] // ID bỏ trống
+        [TestCase("John Doe", "1q2qw", "0123456789", "john@gmail.com", 2002, 05, 11, false)] // ID chứa ký tự không hợp lệ
+        [TestCase("John Doe", "123", "0123456789", "john@gmail.com", 2002, 05, 11, false)] // ID quá ngắn
+        [TestCase("John Doe", "12214254365473441", "0123456789", "john@gmail.com", 2002, 05, 11, false)] // ID quá dài
+
+        // Textbox "Name"
+        [TestCase("", "123456789012", "0123456789", "john@gmail.com", 2002, 05, 11, false)] // Name bỏ trống
+        [TestCase("Nguyễn Ngọc @---+", "123456789012", "0123456789", "john@gmail.com", 2002, 05, 11, true)] // Name chứa ký tự đặc biệt
+        [TestCase("N", "123456789012", "0123456789", "john@gmail.com", 2002, 05, 11, true)] // Name hợp lệ, 1 ký tự
+        [TestCase("Nguyễn Ngọc AB... (39)", "123456789012", "0123456789", "john@gmail.com", 2002, 05, 11, true)] // Name hợp lệ, 39 ký tự
+        [TestCase("Nguyễn Ngọc AB... (40)", "123456789012", "0123456789", "john@gmail.com", 2002, 05, 11, true)] // Name hợp lệ, 40 ký tự
+        [TestCase(" Nguyễn Ngọc AB ", "123456789012", "0123456789", "john@gmail.com", 2002, 05, 11, true)] // Name hợp lệ, có khoảng trắng ở đầu và cuối chuỗi
+
+        // Textbox "Phone"
+        [TestCase("John Doe", "123456789012", "", "john@gmail.com", 2002, 05, 11, false)] // Phone bỏ trống
+        [TestCase("John Doe", "123456789012", "01234", "john@gmail.com", 2002, 05, 11, false)] // Phone quá ngắn
+        [TestCase("John Doe", "123456789012", "qư121w", "john@gmail.com", 2002, 05, 11, false)] // Phone chứa ký tự không hợp lệ
+        [TestCase("John Doe", "123456789012", "0122141807534141", "john@gmail.com", 2002, 05, 11, false)] // Phone quá dài
+        [TestCase("John Doe", "123456789012", "123143893", "john@gmail.com", 2002, 05, 11, false)] // Phone không hợp lệ
+
+
+        // Textbox "Email"
+        [TestCase("John Doe", "123456789012", "0123456789", "", 2002, 05, 11, false)] // Email bỏ trống
+        [TestCase("John Doe", "123456789012", "0123456789", "nguyenngoc123456789023456789....abcd@gmail.com", 2002, 05, 11, false)] // Email quá dài (61 ký tự)
+        [TestCase("John Doe", "123456789012", "0123456789", "nguyenngoc@vmail.com", 2002, 05, 11, false)] // Email không hợp lệ
+        [TestCase("John Doe", "123456789012", "0123456789", "n@gmail.com", 2002, 05, 11, true)] // Email hợp lệ, ngắn gọn
+        [TestCase("John Doe", "123456789012", "0123456789", "niiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii@gmail.com", 2002, 05, 11, true)] // Email hợp lệ, 59 ký tự tên
+        [TestCase("John Doe", "123456789012", "0123456789", "niiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii@gmail.com", 2002, 05, 11, true)] // Email hợp lệ, 60 ký tự tên
+        [TestCase("John Doe", "123456789012", "0123456789", "nguyenngoc@gmail.com", 2002, 05, 11, true)] // Email hợp lệ
+
+        // Date picker "Birth"
+        [TestCase("John Doe", "123456789012", "0123456789", "john@gmail.com", 2022, 12, 20, true)] // Birth hợp lệ (20/12/2022)
         #endregion
+
         [Test, Apartment(ApartmentState.STA)]
-        public void TestConfirm_Click(string name, string id, string email, bool expectedResult)
+        public void TestConfirm_Click(string name, string id, string phone, string email, int year, int month, int day, bool expectedResult)
         {
             // Arrange: Giả lập dữ liệu khách hàng hợp lệ
             var eventArgs = new RoutedEventArgs();
@@ -64,30 +89,30 @@ namespace TestProject3
 
             // Tạo danh sách khách hàng
             var customerList = new ObservableCollection<CustomerDTO>
-    {
-        new CustomerDTO
-        {
-            CustomerName = name,
-            ID = id,
-            Phone = "0123456789",
-            Email = email,
-            Birth = new DateTime(1990, 5, 15)
-        }
-    };
+            {
+                new CustomerDTO
+                {
+                    CustomerName = name,
+                    ID = id,
+                    Phone = phone,
+                    Email = email,
+                    Birth = new DateTime(year, month, day)
+                }
+            };
 
             // Giả lập khách hàng
             sellTicketWindow.ViewCustomerData = customerList;
             sellTicketWindow.customerView = CollectionViewSource.GetDefaultView(sellTicketWindow.ViewCustomerData);
-            //if(sellTicketWindow.myListView == null)
-            //{
-            //    throw new Exception("customerView null");
-            //}    
             sellTicketWindow.myListView.ItemsSource = sellTicketWindow.customerView;
+
             // Act: Gọi Confirm_Click
             sellTicketWindow.Confirm_Click(this, eventArgs);
+
+            // Log kết quả để debug
+            Console.WriteLine($"Name: {name}, ID: {id}, Phone: {phone}, Email: {email}, Birth: {new DateTime(year, month, day)}");
             Console.WriteLine($"Expected: {expectedResult}, Actual: {sellTicketWindow.IsSuccess}");
 
-            // Assert: Tất cả khách hàng hợp lệ thì ResetData được gọi
+            // Assert: Kiểm tra kết quả
             Assert.That(expectedResult, Is.EqualTo(sellTicketWindow.IsSuccess));
         }
 

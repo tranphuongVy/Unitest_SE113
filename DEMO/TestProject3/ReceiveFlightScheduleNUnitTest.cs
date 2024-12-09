@@ -107,7 +107,7 @@ namespace FlightScheduleTests
 
         // Test cases for Intermediate Airport
         [TestCase("", "", "", "", ExpectedResult = false)] // All fields empty
-        [TestCase("1", "Airport A", "-1", "", ExpectedResult = false)] // Invalid Layover Time (negative)
+        [TestCase("1", "Airport A", "-1", "Valid Note", ExpectedResult = false)] // Invalid Layover Time (negative)
         [TestCase("1", "Airport A", "abc", "Valid Note", ExpectedResult = false)] // Invalid Layover Time (non-numeric)
         [TestCase("1", "Airport A", "2", "Valid Note", ExpectedResult = true)] // Valid data
         [TestCase("1", "Airport A", "0", "Valid Note", ExpectedResult = true)]
