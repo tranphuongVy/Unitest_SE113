@@ -23,14 +23,14 @@ namespace GUI.View
         private ObservableCollection<TicketClassDTO> ticketClassDTOs = new ObservableCollection<TicketClassDTO>();
         public Window10()
         {
-            InitializeComponent();
-            parameter = new BLL.SearchProcessor().GetParameterDTO();
-            LoadData();
+            //InitializeComponent();
+            //parameter = new BLL.SearchProcessor().GetParameterDTO();
+           // LoadData();
         }
 
         private void LoadData()
         {
-            LoadParameter();
+//            LoadParameter();
             airports = new ObservableCollection<AirportDTO>(new BLL.Airport_BLL().L_airport());
             ticketClassDTOs = new ObservableCollection<TicketClassDTO>(new BLL.Ticket_Class_BLL().L_TicketClass());
             ListAirport.ItemsSource = airports;
@@ -200,7 +200,7 @@ namespace GUI.View
 
             LoadParameter();
         }
-        static bool HasSpecialCharacters(string str)
+        protected bool HasSpecialCharacters(string str)
         {
             // Regex pattern để kiểm tra ký tự đặc biệt (ngoại trừ khoảng trắng)
             string pattern = @"[^\w\sÀ-ỹ]"; // \w bao gồm chữ cái và số, \s là khoảng trắng, À-ỹ cho các ký tự tiếng Việt
@@ -211,7 +211,7 @@ namespace GUI.View
             return regex.IsMatch(str);
         }
 
-        static string FormatString(string str)
+        protected string FormatString(string str)
         {
             if (string.IsNullOrEmpty(str))
                 return str;
@@ -228,7 +228,7 @@ namespace GUI.View
             return string.Join(" ", words);
         }
 
-            static bool PositiveIntegerChecking(string str)
+            protected bool PositiveIntegerChecking(string str)
             {
             // Biểu thức chính quy để kiểm tra ký tự đặc biệt
             Regex regex = new Regex("[^0-9.]");
@@ -260,10 +260,11 @@ namespace GUI.View
                 NewAirport.Text = string.Empty;
             }
         }
-        public string check()
+        protected string check(string input)
         {
+            NewMultiplier.Text= input;
             string st = string.Empty;
-            foreach(char c in NewMultiplier.Text.ToString())
+            foreach(char c in NewMultiplier.Text)
             {
                 if(char.IsLetter(c))
                 {
@@ -286,7 +287,7 @@ namespace GUI.View
             }
             if (!string.IsNullOrWhiteSpace(FormatString(NewClassName.Text)) && !string.IsNullOrWhiteSpace(NewMultiplier.Text))
             {
-                string st = check();
+                string st = check(NewMultiplier.Text);
                 if(st != string.Empty)
                 {
                     MessageBox.Show(st, "Error");
@@ -355,5 +356,91 @@ namespace GUI.View
                 }
             }
         }
+
+      
+        //<<===================== FUNCITON TO TEST =========================>>>>
+
+        public bool HasSpecialCharactersCheck(string str)
+        {
+            // Regex pattern để kiểm tra ký tự đặc biệt (ngoại trừ khoảng trắng)
+            string pattern = @"[^\w\sÀ-ỹ]"; // \w bao gồm chữ cái và số, \s là khoảng trắng, À-ỹ cho các ký tự tiếng Việt
+
+            // Tạo đối tượng Regex với pattern
+            Regex regex = new Regex(pattern);
+
+            return regex.IsMatch(str);
+        }
+
+        public string FormatStringCheck(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return str;
+
+            string[] words = str.Split(' ');
+            for (int i = 0; i < words.Length; i++)
+            {
+                if (words[i].Length > 0)
+                {
+                    words[i] = char.ToUpper(words[i][0]) + words[i].Substring(1).ToLower();
+                }
+            }
+
+            return string.Join(" ", words);
+        }
+
+        public bool PositiveIntegerCheck(string str)
+        {
+            // Loại bỏ khoảng trắng ở đầu và cuối chuỗi
+            str = str.Trim();
+
+            // Biểu thức chính quy để kiểm tra số thực dương
+            Regex regex = new Regex(@"^0*[1-9]\d*(\.\d+)?$");
+
+            // Trả về true nếu chuỗi là số thực dương hợp lệ
+            return regex.IsMatch(str);
+        }
+
+
+        public string EmptyAndCharNewMultiplierCheck(string input)
+        {
+            
+            string st = string.Empty;
+            foreach (char c in input)
+            {
+                if (char.IsLetter(c))
+                {
+                    return "Please re-enter the Multiplier";
+                }
+            }
+            return st;
+        }
+
+        public string InputTicketClassAndMultipilerCheck(string inputTicketClass, string inputMultiplier)
+        {
+            if (string.IsNullOrWhiteSpace(inputMultiplier))
+            {
+                return ("Please enter the multiplier of the ticket class. Error");
+
+            }
+            if (HasSpecialCharacters(inputTicketClass))
+            {
+                return ("Ticket class' name has special character");
+                
+            }
+            if (PositiveIntegerCheck(inputMultiplier)== false)
+            {
+                return ("Ticket class'multiplier must be > 0");
+                
+            }
+            if (string.IsNullOrWhiteSpace(inputTicketClass))
+            {
+                return ("Please enter the ticket class. Error");
+                
+            }
+            return ("All Correct");
+        }
+
+
+        
     }
 }

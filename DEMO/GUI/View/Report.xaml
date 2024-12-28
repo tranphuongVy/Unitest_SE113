@@ -8,7 +8,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="805"
-             Style="{StaticResource Page_Style}">
+             >
     <UserControl.DataContext>
         <vm:ReportVM/>
     </UserControl.DataContext>
@@ -74,31 +74,31 @@
 
     <Border Background="WhiteSmoke" CornerRadius="0 20 20 0">
         <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <TextBlock Text="Report"
+            <TextBlock Text="Report"
                    Grid.Row="0"
                    FontSize="32" FontWeight="SemiBold"
                    HorizontalAlignment="Left" VerticalAlignment="Top"
                    Margin="20 10 0 0" Height="43" Width="341"/>
 
-        <TabControl x:Name="tab_report" Grid.Row="1">
-            <TabItem x:Name="tab1"  Header="Month"
+            <TabControl x:Name="tab_report" Grid.Row="1">
+                <TabItem x:Name="tab1"  Header="Month"
                      Background="LightGray">
-                <!-- Tab 1 -->
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="120"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="50"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.ColumnSpan="2"
+                    <!-- Tab 1 -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="120"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="50"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.ColumnSpan="2"
                                 HorizontalAlignment="Left"
                                 Margin="82,0,0,0" Width="641">
-                        <!--
+                            <!--
                         <TextBlock
                                    Text="From:"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -127,91 +127,91 @@
                                     Width ="200">
                         </DatePicker>
                         -->
-                        <TextBlock x:Name="month_txtbl"
+                            <TextBlock x:Name="month_txtbl"
                                    Text="Month:"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    FontSize="20"
-                                   Margin="0 0 15 5">   
-                        </TextBlock>
-                        <TextBox x:Name="Month_TabMonth"
+                                   Margin="0 0 15 5">
+                            </TextBlock>
+                            <TextBox x:Name="Month_TabMonth"
                                  Height="50" Width="150"
                                  materialDesign:HintAssist.Hint="MM"
                                  materialDesign:HintAssist.HelperText=""
                                  HorizontalAlignment="Center" VerticalAlignment="Center"
                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                        </TextBox>
+                            </TextBox>
                             <TextBlock x:Name="year_txtbl"
                                    Text="Year: "
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    FontSize="20"
                                    Margin="15 0 15 5">
-                        </TextBlock>
-                        <TextBox x:Name="Year_TabMonth"
+                            </TextBlock>
+                            <TextBox x:Name="Year_TabMonth"
                                  Height="50" Width="150"
                                  materialDesign:HintAssist.Hint="YYYY"
                                  materialDesign:HintAssist.HelperText=""
                                  HorizontalAlignment="Center" VerticalAlignment="Center"
                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                        </TextBox>
-                        <Button Content="Search"
+                            </TextBox>
+                            <Button Content="Search"
                                 Click="Search_TabMonth_Click"
                                 Margin="20 0 0 0" Width="101" Height="40"
                                 VerticalAlignment="Center" HorizontalAlignment="Center" 
                                 Style="{StaticResource addButton}" />
-                    </StackPanel>
+                        </StackPanel>
 
-                    <DataGrid x:Name="GridRP_Month" Grid.Row="1"
+                        <DataGrid x:Name="GridRP_Month" Grid.Row="1"
                               AutoGenerateColumns="False"  CanUserAddRows="False" IsReadOnly="True" Grid.ColumnSpan="2"
                               HorizontalContentAlignment="Center" HorizontalAlignment="Left" Width="805">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Flight ID" Binding="{Binding flightID}" Width="*"
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Flight ID" Binding="{Binding flightID}" Width="*"
                                                 HeaderStyle="{StaticResource CenterAlignedColumnHeaderStyle}"
                                                 ElementStyle="{StaticResource CenterAlignedTextBlock}"
                                                 EditingElementStyle="{StaticResource CenterAlignedTextBox}"/>
-                            <DataGridTextColumn Header="Tickets Sold" Binding="{Binding ticketsSold}" Width="*"
+                                <DataGridTextColumn Header="Tickets Sold" Binding="{Binding ticketsSold}" Width="*"
                                                 HeaderStyle="{StaticResource CenterAlignedColumnHeaderStyle}"
                                                 ElementStyle="{StaticResource CenterAlignedTextBlock}"
                                                 EditingElementStyle="{StaticResource CenterAlignedTextBox}"/>
-                            <DataGridTextColumn Header="Revenue" Binding="{Binding revenue}" Width="*"
+                                <DataGridTextColumn Header="Revenue" Binding="{Binding revenue}" Width="*"
                                                 HeaderStyle="{StaticResource CenterAlignedColumnHeaderStyle}"
                                                 ElementStyle="{StaticResource CenterAlignedTextBlock}"
                                                 EditingElementStyle="{StaticResource CenterAlignedTextBox}"/>
-                            <DataGridTextColumn Header="Ratio" Binding="{Binding ratio}" Width="*"
+                                <DataGridTextColumn Header="Ratio" Binding="{Binding ratio}" Width="*"
                                                 HeaderStyle="{StaticResource CenterAlignedColumnHeaderStyle}"
                                                 ElementStyle="{StaticResource CenterAlignedTextBlock}"
                                                 EditingElementStyle="{StaticResource CenterAlignedTextBox}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                            </DataGrid.Columns>
+                        </DataGrid>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal">
-                        <TextBlock x:Name="total_txtbl"
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock x:Name="total_txtbl"
                                    Text="Total:"
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
                                    FontSize="20"
                                    Margin="600 0 0 0">
-                        </TextBlock>
-                        <TextBlock x:Name="TotalRevenue_Month"
+                            </TextBlock>
+                            <TextBlock x:Name="TotalRevenue_Month"
                                    Text=""
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
                                    FontSize="20"
-                                   Margin="15 0 20 0">  
-                        </TextBlock>
-                    </StackPanel>
-                    
-                </Grid>
-            </TabItem>
-            <TabItem x:Name="tab2" Header="Year">
-                <Grid>
+                                   Margin="15 0 20 0">
+                            </TextBlock>
+                        </StackPanel>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="120"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="50"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.ColumnSpan="2"
+                    </Grid>
+                </TabItem>
+                <TabItem x:Name="tab2" Header="Year">
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="120"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="50"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.ColumnSpan="2"
                                 HorizontalAlignment="Center"
                                 Margin="0 0 0 0">
-                        <!--
+                            <!--
                         <TextBlock
                                    Text="From:"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -241,66 +241,66 @@
                                  HorizontalContentAlignment="Center">
                         </TextBox>
                         -->
-                        <TextBlock
+                            <TextBlock
                                    Text="Year: "
                                    HorizontalAlignment="Center" VerticalAlignment="Center"
                                    FontSize="20"
-                                   Margin="0 0 15 5">   
-                        </TextBlock>
-                        <TextBox x:Name="Year_TabYear"
+                                   Margin="0 0 15 5">
+                            </TextBlock>
+                            <TextBox x:Name="Year_TabYear"
                                  Width="200" Height="40"
                                  materialDesign:HintAssist.Hint="YYYY"
                                  materialDesign:HintAssist.HelperText=""
                                  Padding="0 0 0 0"
                                  VerticalContentAlignment="Center"
-                                 HorizontalContentAlignment="Center"/>  
-                        <Button Content="Search"
+                                 HorizontalContentAlignment="Center"/>
+                            <Button Content="Search"
                                 Click="Search_TabYear_Click"
                                 Margin="20 0 0 0" Width="101"
                                 VerticalAlignment="Center" HorizontalAlignment="Center" 
                                 Style="{StaticResource addButton}" />
-                    </StackPanel>
+                        </StackPanel>
 
-                    <DataGrid x:Name="GridRP_Year" Grid.Row="1"
+                        <DataGrid x:Name="GridRP_Year" Grid.Row="1"
               AutoGenerateColumns="False"  CanUserAddRows="False" IsReadOnly="True" Grid.ColumnSpan="2"
               HorizontalContentAlignment="Center" HorizontalAlignment="Center">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Month" Binding="{Binding month_year}" Width="*"
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Month" Binding="{Binding month_year}" Width="*"
                                 HeaderStyle="{StaticResource CenterAlignedColumnHeaderStyle}"
                                 ElementStyle="{StaticResource CenterAlignedTextBlock}"
                                 EditingElementStyle="{StaticResource CenterAlignedTextBox}"/>
-                            <DataGridTextColumn Header="Flight Quantity" Binding="{Binding flightQuantity}" Width="*"
+                                <DataGridTextColumn Header="Flight Quantity" Binding="{Binding flightQuantity}" Width="*"
                                 HeaderStyle="{StaticResource CenterAlignedColumnHeaderStyle}"
                                 ElementStyle="{StaticResource CenterAlignedTextBlock}"
                                 EditingElementStyle="{StaticResource CenterAlignedTextBox}"/>
-                            <DataGridTextColumn Header="Revenue" Binding="{Binding revenue}" Width="*"
+                                <DataGridTextColumn Header="Revenue" Binding="{Binding revenue}" Width="*"
                                 HeaderStyle="{StaticResource CenterAlignedColumnHeaderStyle}"
                                 ElementStyle="{StaticResource CenterAlignedTextBlock}"
                                 EditingElementStyle="{StaticResource CenterAlignedTextBox}"/>
-                            <DataGridTextColumn Header="Ratio" Binding="{Binding ratio}" Width="*"
+                                <DataGridTextColumn Header="Ratio" Binding="{Binding ratio}" Width="*"
                                 HeaderStyle="{StaticResource CenterAlignedColumnHeaderStyle}"
                                 ElementStyle="{StaticResource CenterAlignedTextBlock}"
                                 EditingElementStyle="{StaticResource CenterAlignedTextBox}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                            </DataGrid.Columns>
+                        </DataGrid>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal">
-                        <TextBlock 
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock 
                                    Text="Total:"
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
                                    FontSize="20"
-                                   Margin="600 0 0 0">  
-                        </TextBlock>
-                        <TextBlock x:Name="TotalRevenue_Year"
+                                   Margin="600 0 0 0">
+                            </TextBlock>
+                            <TextBlock x:Name="TotalRevenue_Year"
                                    Text=""
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
                                    FontSize="20"
                                    Margin="15 0 20 0">
-                        </TextBlock>
-                    </StackPanel>
-                </Grid>
-            </TabItem>
-        </TabControl>
-    </Grid>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
     </Border>
 </UserControl>
